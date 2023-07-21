@@ -1,6 +1,7 @@
 import psycopg2
 from bus_ticket_system.app.modules.bus.sql import SqlBus
 
+
 class ConnectDataBase:
 
     def __init__(self):
@@ -19,5 +20,3 @@ class ConnectDataBase:
 
     def get_instance(self):
         return self._connect
-
-
