@@ -4,7 +4,7 @@ from bus_ticket_system.app.modules.bus.controller import bp as bp_bus
 
 
 app = Flask(__name__)
-app.register_blueprint(bp_bus, url_prefix="/bus/")
+app.register_blueprint(bp_bus)
 # criando as tabelas caso não existam ainda
 ConnectDataBase().init_table()  #obj anônimo
 

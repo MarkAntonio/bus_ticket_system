@@ -1,6 +1,8 @@
 class Bus:
-
-    FIELDS = ['license_plate', 'type', 'amount_seats']
+    LICENSE_PLATE = 'license_plate'
+    TYPE = 'type'
+    AMOUNT_SEATS = 'amount_seats'
+    FIELDS = [LICENSE_PLATE, TYPE, AMOUNT_SEATS]
 
     def __init__(self, license_plate, type, amount_seats, id=None):
         self.id = id
