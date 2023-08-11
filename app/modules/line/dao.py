@@ -13,8 +13,8 @@ class LineDao:
         cursor.execute(SqlLine._INSERT,
                        (line.origin,
                         line.destination,
-                        line.departure_time,
-                        line.arrival_time,
+                        Line.time_to_str(line.departure_time),
+                        Line.time_to_str(line.arrival_time),
                         line.total_price)
                        )
         self.connection.commit()
@@ -51,8 +51,8 @@ class LineDao:
         cursor.execute(SqlLine._UPDATE.format(SqlLine.TABLE_NAME), (
             new_line.origin,
             new_line.destination,
-            new_line.departure_time,
-            new_line.arrival_time,
+            Line.time_to_str(new_line.departure_time),
+            Line.time_to_str(new_line.arrival_time),
             new_line.total_price,
             str(current_line.id)))
         self.connection.commit()

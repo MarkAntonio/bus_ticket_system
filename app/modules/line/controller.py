@@ -1,6 +1,6 @@
 from . import Line
 from flask import Blueprint, make_response, jsonify, request, Response
-from bus_ticket_system.app.util import to_dict, GET, POST, DELETE, PUT, DEFAULT_ERROR
+from bus_ticket_system.app.util import GET, POST, DELETE, PUT, DEFAULT_ERROR
 from .business import LineBusiness
 import traceback
 
@@ -17,7 +17,7 @@ def add():
             has_error, error_msgs = line_business.validate_fields(data, Line.FIELDS)
             if not has_error:
                 line = line_business.save(data)  # retorna o Line com o id gerado na base
-                return make_response(jsonify(to_dict(line)), 201)
+                return make_response(jsonify(line.to_dict()), 201)
 
             return make_response(jsonify({'Message': error_msgs}), 400)
 
@@ -33,8 +33,7 @@ def add():
 def _get_all():
     lines = line_business.get()
     if lines:
-        result = [to_dict(line) for line in lines]
-        print(result)
+        result = [line.to_dict() for line in lines]
         return make_response(jsonify(result), 200)
     return make_response([])
 
@@ -42,7 +41,7 @@ def _get_all():
 def _get_by_id(id):
     line = line_business.get(id=id)
     if line:
-        return make_response(jsonify(to_dict(line)), 200)
+        return make_response(jsonify(line.to_dict()), 200)
     return make_response(jsonify({"Message": "Line id not found"}), 404)
 
 
@@ -52,9 +51,13 @@ def _update(id):
     has_error, error_msgs = line_business.validate_fields(data, Line.FIELDS)
     if not has_error:
         if current_line:
-            new_line = Line(**data, id=id)
+            # está mostrando esse erro por que estou colocando dados de tipos diferentes de str no data
+            data[Line.DEPARTURE_TIME] = Line.str_to_time(data[Line.DEPARTURE_TIME])
+            data[Line.ARRIVAL_TIME] = Line.str_to_time(data[Line.ARRIVAL_TIME])
+            data[Line.ID] = id
+            new_line = Line(**data)
             line_business.update(current_line, new_line)
-            return make_response(jsonify(to_dict(new_line)))
+            return make_response(jsonify(new_line.to_dict()))
         return make_response({"Error": "Line id not found"}, 404)
 
     return make_response(jsonify({'Message': error_msgs}), 400)

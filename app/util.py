@@ -38,9 +38,3 @@ class BaseValidate:
                         error_msgs.append(data_value)
                         error_flag = True
         return error_flag, error_msgs
-
-
-def to_dict(obj):
-    dict_attrs = {str(col): getattr(obj, col) for col in obj.FIELDS}
-    dict_attrs["id"] = obj.id
-    return dict_attrs
