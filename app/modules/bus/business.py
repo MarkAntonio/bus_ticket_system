@@ -1,10 +1,12 @@
-from .dao import BusDao
-from .model import Bus
 import re  # Regular Expressions
+
 from bus_ticket_system.app.util import BaseValidate
+from .model import Bus
+from .dao import BusDao
 
 
-class BusBussiness(BaseValidate):
+class BusBusiness(BaseValidate):
+    # Expressão Regular para identificar padrão de placas de veículos brasileiras
     _LICENSE_REGEX = re.compile(r'^[A-Z]{3}\d[A-Z]\d{2}$')
     _AVAILABLE_TYPES = ('Convencional', 'Executivo', 'Leito', 'Leito Cama')
 
@@ -52,4 +54,4 @@ class BusBussiness(BaseValidate):
         return None
 
     def reconnect(self):
-        self.__bus_dao.new_connection()
+        self.__bus_dao.rollback()

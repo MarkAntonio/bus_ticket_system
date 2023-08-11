@@ -1,9 +1,6 @@
-import psycopg2
-import traceback
 from bus_ticket_system.app.database import ConnectDataBase
 from .model import Bus
 from .sql import SqlBus
-from psycopg2.errors import CheckViolation, UniqueViolation
 
 
 class BusDao:
@@ -26,7 +23,7 @@ class BusDao:
     def get_all(self):
         buses = []
         cursor = self.connection.cursor()
-        cursor.execute(SqlBus._SELECT_ALL.format(SqlBus._TABLE_NAME))
+        cursor.execute(SqlBus._SELECT_ALL)
         result = cursor.fetchall()
         columns_name = [desc[0] for desc in cursor.description]
 
@@ -39,7 +36,7 @@ class BusDao:
 
     def get_by_id(self, id: int):
         cursor = self.connection.cursor()
-        cursor.execute(SqlBus._SELECT_BY_ID.format(SqlBus._TABLE_NAME, id))
+        cursor.execute(SqlBus._SELECT_BY_ID.format(SqlBus.TABLE_NAME, id))
         row = cursor.fetchone()
         if row:
             columns_name = [desc[0] for desc in cursor.description]
@@ -49,7 +46,7 @@ class BusDao:
 
     def get_by_license(self, license: str):
         cursor = self.connection.cursor()
-        cursor.execute(SqlBus._SELECT_BY_LICENSE.format(SqlBus._TABLE_NAME, license))
+        cursor.execute(SqlBus._SELECT_BY_LICENSE.format(SqlBus.TABLE_NAME, license))
         row = cursor.fetchone()
         if not row:
             return None
@@ -61,7 +58,7 @@ class BusDao:
     def get_all_by_type(self, type: str):
         buses = []
         cursor = self.connection.cursor()
-        cursor.execute(SqlBus._SEARCH_TYPES.format(SqlBus._TABLE_NAME, type))
+        cursor.execute(SqlBus._SEARCH_TYPES.format(SqlBus.TABLE_NAME, type))
         result = cursor.fetchall()
         columns_name = [desc[0] for desc in cursor.description]
         cursor.close()
@@ -74,7 +71,7 @@ class BusDao:
 
     def update(self, current_bus: Bus, new_bus: Bus):
         cursor = self.connection.cursor()
-        cursor.execute(SqlBus._UPDATE.format(SqlBus._TABLE_NAME), (
+        cursor.execute(SqlBus._UPDATE.format(SqlBus.TABLE_NAME), (
             new_bus.license_plate,
             new_bus.type,
             new_bus.amount_seats,
@@ -84,7 +81,7 @@ class BusDao:
 
     def delete(self, id: int):
         cursor = self.connection.cursor()
-        cursor.execute(SqlBus._DELETE.format(SqlBus._TABLE_NAME, id))
+        cursor.execute(SqlBus._DELETE.format(SqlBus.TABLE_NAME, id))
         self.connection.commit()
         cursor.close()
 
@@ -95,5 +92,5 @@ class BusDao:
             return bus
         return None
 
-    def new_connection(self):
-        self.connection = ConnectDataBase().get_instance()
+    def rollback(self):
+        self.connection.rollback()

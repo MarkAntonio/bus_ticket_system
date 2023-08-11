@@ -1,5 +1,6 @@
 import psycopg2
-from bus_ticket_system.app.modules.bus.sql import SqlBus
+from bus_ticket_system.app.modules.bus import SqlBus
+from bus_ticket_system.app.modules.line import SqlLine
 
 
 class ConnectDataBase:
@@ -15,6 +16,7 @@ class ConnectDataBase:
     def init_table(self):
         cursor = self._connect.cursor()
         cursor.execute(SqlBus._CREATE_TABLE)  # Inicializar cada uma das tables
+        cursor.execute(SqlLine._CREATE_TABLE)
         self._connect.commit()  # Commitando para que o comando seja realizado
         cursor.close()  # fechando a conexão
 
