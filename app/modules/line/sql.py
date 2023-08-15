@@ -6,7 +6,7 @@ class SqlLine:
                             destination VARCHAR(50) NOT NULL,
                             departure_time TIME NOT NULL,
                             arrival_time TIME NOT NULL,
-                            total_price MONEY NOT NULL
+                            total_price NUMERIC(6,2) NOT NULL
                         );'''
 
     _INSERT = f'''INSERT INTO {TABLE_NAME} (origin, destination, departure_time, arrival_time, total_price)

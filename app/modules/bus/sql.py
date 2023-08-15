@@ -2,7 +2,7 @@ class SqlBus:
     TABLE_NAME = 'bus'
     _CREATE_TABLE = f'CREATE TABLE IF NOT EXISTS {TABLE_NAME}(' \
                             '''id SERIAL PRIMARY KEY,
-                            license_plate CHAR(7) NOT NULL UNIQUE CHECK (license_plate ~ '[A-Z]{3}[0-9][A-Z][0-9]{2}'),
+                            license_plate CHAR(7) NOT NULL UNIQUE CHECK (license_plate ~ '^[A-Z]{3}[0-9][A-Z][0-9]{2}$'),
                             type VARCHAR(12) 
                             CHECK (type IN ('Convencional', 'Executivo', 'Semi Leito', 'Leito', 'Leito Cama')),
                             amount_seats INTEGER NOT NULL
