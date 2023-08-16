@@ -3,19 +3,33 @@ import re  # Regular Expressions
 from bus_ticket_system.app.util import BaseValidate
 from .model import Bus
 from .dao import BusDao
+from bus_ticket_system.app.modules.seat.business import SeatBusiness  # obj seat_business
+from bus_ticket_system.app.modules.seat import Seat
 
 
 class BusBusiness(BaseValidate):
     # Expressão Regular para identificar padrão de placas de veículos brasileiras
     _LICENSE_REGEX = re.compile(r'^[A-Z]{3}\d[A-Z]\d{2}$')
     _AVAILABLE_TYPES = ('Convencional', 'Executivo', 'Leito', 'Leito Cama')
+    _seat_business = SeatBusiness()
 
     def __init__(self):
         self.__bus_dao = BusDao()
 
     def save(self, data):
-        bus = self.__bus_dao.save(Bus(**data))  # atribui o id para eu retornar para a API
+        bus = self.__bus_dao.save(Bus(**data))  # atribui o id para eu retornar para a AP
+        try:
+            self._create_seats(bus)
+        except Exception:
+            # se der errado na criação nos assentos, eu tenho que deletar o ônibus para não o ônibus sem assentos no db.
+            self.delete(bus.id)
         return bus
+
+    def _create_seats(self, bus: Bus):
+        # como o atributo amount_seat está como string quando volta da base, devo tranformá-lo em int
+        for number in range(1, int(bus.amount_seats) + 1):
+            seat = {Seat.NUMBER: number, Seat.IS_FREE: True, Seat.VACANT_IN: None, Seat.BUS_ID: bus.id}
+            self._seat_business.add(seat)
 
     def get(self, **kwargs):
         if not kwargs:
@@ -33,7 +47,6 @@ class BusBusiness(BaseValidate):
 
     def delete(self, id):
         self.__bus_dao.delete(id)
-
 
     def _validate_license_plate(self, license):
         if not self._LICENSE_REGEX.match(license):

@@ -11,12 +11,12 @@ class SeatDao:
     def save(self, seat: Seat):
         cursor = self.connection.cursor()
         cursor.execute(SqlSeat._INSERT,
-                       (seat.is_free,
+                       (seat.number,
+                        seat.is_free,
                         seat.vacant_in,
                         seat.bus_id)
                        )
         self.connection.commit()
-        seat.id = cursor.fetchone()[0] # o número do assento aqui é representado pelo id
         cursor.close()
         return seat
 
@@ -34,9 +34,9 @@ class SeatDao:
         if seats:
             return seats
 
-    def get_by_id(self, id: int):
+    def get_by_number(self, number, bus_id):
         cursor = self.connection.cursor()
-        cursor.execute(SqlSeat._SELECT_BY_ID.format(SqlSeat.TABLE_NAME, id))
+        cursor.execute(SqlSeat._SELECT_BY_NUMBER.format(SqlSeat.TABLE_NAME, number, bus_id))
         row = cursor.fetchone()
         if row:
             columns_name = [desc[0] for desc in cursor.description]
@@ -49,7 +49,7 @@ class SeatDao:
         cursor.execute(SqlSeat._UPDATE.format(SqlSeat.TABLE_NAME), (
             new_seat.is_free,
             new_seat.vacant_in,
-            str(current_seat.id)))
+            str(current_seat.number)))
         self.connection.commit()
         cursor.close()
 

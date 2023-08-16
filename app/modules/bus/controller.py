@@ -10,7 +10,6 @@ ROUTE = '/bus'
 bp = Blueprint("bus", "__name__", url_prefix=ROUTE)
 bus_business = BusBusiness()
 
-
 @bp.route("/", methods=[POST, GET])
 def add():
     try:
