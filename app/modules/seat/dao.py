@@ -55,7 +55,7 @@ class SeatDao:
 
     def delete_all(self, bus_id: int):
         cursor = self.connection.cursor()
-        cursor.execute(SqlSeat._DELETE.format(SqlSeat.TABLE_NAME, bus_id))
+        cursor.execute(SqlSeat._DELETE_ALL.format(SqlSeat.TABLE_NAME, bus_id))
         self.connection.commit()
         cursor.close()
 

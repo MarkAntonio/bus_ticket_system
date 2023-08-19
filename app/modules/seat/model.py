@@ -6,7 +6,7 @@ class Seat:
     IS_FREE = 'is_free'
     VACANT_IN = 'vacant_in'
     BUS_ID = 'bus_id'  # Foreign key
-    FIELDS = [IS_FREE, VACANT_IN, BUS_ID]
+    FIELDS = [NUMBER, IS_FREE, VACANT_IN, BUS_ID]
 
     def __init__(self, is_free, number, vacant_in, bus_id):
         self.number = number

@@ -50,6 +50,7 @@ def update():
         data = request.form.to_dict()
         current_seat = seat_business.get(number=data.get(Seat.NUMBER), bus_id=data.get(Seat.BUS_ID))
         bus = bus_business.get(id=data.get(Seat.BUS_ID))
+        print(data)
         if bus:
             if current_seat:
                 has_error, error_msgs = seat_business.validate_fields(data, Seat.FIELDS)

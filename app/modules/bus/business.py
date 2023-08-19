@@ -29,7 +29,7 @@ class BusBusiness(BaseValidate):
         # como o atributo amount_seat está como string quando volta da base, devo tranformá-lo em int
         for number in range(1, int(bus.amount_seats) + 1):
             seat = {Seat.NUMBER: number, Seat.IS_FREE: True, Seat.VACANT_IN: None, Seat.BUS_ID: bus.id}
-            self._seat_business.add(seat)
+            self._seat_business.save(seat)
 
     def get(self, **kwargs):
         if not kwargs:
@@ -46,6 +46,8 @@ class BusBusiness(BaseValidate):
         self.__bus_dao.update(current_bus, new_bus)
 
     def delete(self, id):
+        # Deleto todos os assentos que pertencem ao ônibus antes de deletar o ônibus
+        self._seat_business.delete(id)
         self.__bus_dao.delete(id)
 
     def _validate_license_plate(self, license):

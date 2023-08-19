@@ -4,6 +4,7 @@ from .model import Seat
 
 
 class SeatBusiness(BaseValidate):
+    __tag_is_free = True
 
     def __init__(self):
         self.__seat_dao = SeatDao()
@@ -14,7 +15,6 @@ class SeatBusiness(BaseValidate):
 
     def get(self, **kwargs):
         if kwargs.get('bus_id'):
-            print(kwargs.get('number'))
             if kwargs.get('number'):
                 return self.__seat_dao.get_by_number(kwargs['number'], kwargs['bus_id'])
             return self.__seat_dao.get_all(kwargs['bus_id'])
@@ -31,9 +31,16 @@ class SeatBusiness(BaseValidate):
     def reconnect(self):
         self.__seat_dao.rollback()
 
-    def _validate_is_free(self, is_free:str):
-        print(is_free.upper() != 'TRUE')
+    def _validate_is_free(self, is_free: str):
         if is_free.upper() != 'TRUE' and is_free.upper() != 'FALSE':
             return 'The field is_free must contain only the word TRUE or FALSE'
+        if is_free.upper() == 'FALSE':
+            self.__tag_is_free = False
+        else:
+            self.__tag_is_free = True
+
+    def _validate_vacant_in(self, vacant_in: str):
+        if vacant_in.upper() == 'NULL' and not self.__tag_is_free:
+            return 'The seat is not FREE, so, the field vacant_in must be not NULL.'
 
     # não preciso validar number, pois será incrementado pelo sistema. Logo não deve ter erros.
