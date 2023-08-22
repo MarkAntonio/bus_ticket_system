@@ -1,8 +1,10 @@
 import psycopg2
-from bus_ticket_system.app.modules.bus import SqlBus
-from bus_ticket_system.app.modules.line import SqlLine
-from bus_ticket_system.app.modules.passenger import SqlPassenger
-from bus_ticket_system.app.modules.seat import SqlSeat
+from app.modules.bus import SqlBus
+from app.modules.line import SqlLine
+from app.modules.passenger import SqlPassenger
+from app.modules.seat import SqlSeat
+from app.modules.route import SqlRoute
+
 
 class ConnectDataBase:
 
@@ -19,7 +21,8 @@ class ConnectDataBase:
         cursor.execute(SqlBus._CREATE_TABLE)  # Inicializar cada uma das tables
         cursor.execute(SqlLine._CREATE_TABLE)
         cursor.execute(SqlPassenger._CREATE_TABLE)
-        cursor.execute((SqlSeat._CREATE_TABLE))
+        cursor.execute(SqlSeat._CREATE_TABLE)
+        cursor.execute(SqlRoute._CREATE_TABLE)
         self._connect.commit()  # Commitando para que o comando seja realizado
         cursor.close()  # fechando a conexão
 

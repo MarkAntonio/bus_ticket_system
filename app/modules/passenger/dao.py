@@ -1,4 +1,4 @@
-from bus_ticket_system.app.database import ConnectDataBase
+from app.database import ConnectDataBase
 from .model import Passenger
 from .sql import SqlPassenger
 

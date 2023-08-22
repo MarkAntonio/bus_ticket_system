@@ -7,11 +7,10 @@ PUT = "PUT"
 DEFAULT_ERROR = {'Message': 'Ocorreu um erro. Tente novamente ou fale com o suporte.'}
 
 class BaseValidate:
-    def validate_fields(self, data: dict, required_fields):
+    def validate_fields(self, data: dict, required_fields: list):
         error_msgs = []  # serão as mensagens de erro
         error_flag = False  # diz se tem erro ou não
         missing_fields = []
-
         # verifica se a request terá os campos obrigatórios
         for field in required_fields:
             if field not in data or len(data) == 0:

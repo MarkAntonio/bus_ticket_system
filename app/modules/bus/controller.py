@@ -2,7 +2,7 @@ import traceback
 
 from flask import Blueprint, make_response, jsonify, request, Response
 
-from bus_ticket_system.app.util import GET, POST, DELETE, PUT, DEFAULT_ERROR
+from app.util import GET, POST, DELETE, PUT, DEFAULT_ERROR
 from .business import BusBusiness
 from .model import Bus
 

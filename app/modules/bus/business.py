@@ -1,10 +1,10 @@
 import re  # Regular Expressions
 
-from bus_ticket_system.app.util import BaseValidate
+from app.util import BaseValidate
 from .model import Bus
 from .dao import BusDao
-from bus_ticket_system.app.modules.seat.business import SeatBusiness  # obj seat_business
-from bus_ticket_system.app.modules.seat import Seat
+from app.modules.seat.business import SeatBusiness  # obj seat_business
+from app.modules.seat import Seat
 
 
 class BusBusiness(BaseValidate):

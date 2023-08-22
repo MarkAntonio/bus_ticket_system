@@ -1,4 +1,4 @@
-from bus_ticket_system.app.database import ConnectDataBase
+from app.database import ConnectDataBase
 from .model import Seat
 from .sql import SqlSeat
 
@@ -49,7 +49,8 @@ class SeatDao:
         cursor.execute(SqlSeat._UPDATE.format(SqlSeat.TABLE_NAME), (
             new_seat.is_free,
             new_seat.vacant_in,
-            str(current_seat.number)))
+            str(current_seat.number),
+            str(current_seat.bus_id)))
         self.connection.commit()
         cursor.close()
 

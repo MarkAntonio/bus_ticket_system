@@ -1,6 +1,6 @@
 import re
 
-from bus_ticket_system.app.util import BaseValidate
+from app.util import BaseValidate
 from .dao import LineDao
 from .model import Line
 
@@ -56,7 +56,7 @@ class LineBusiness(BaseValidate):
         if not self._TIME_REGEX.match(departure):
             return "The departure time is incorrect. Try a hour format such as 18:46, 05:16 and so on."
 
-    def _validate_total_price(self, price: str):  # 18.00 | 145.98
+    def _validate_total_price(self, price: str):
         if not self._MONEY_REGEX.match(price):
             return "The total price format is incorrect. Try a value such as 28.00, 159.99 and so on."
         if not float(price) > 0:

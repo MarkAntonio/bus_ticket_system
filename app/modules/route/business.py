@@ -1,39 +1,46 @@
 import re
 
-from bus_ticket_system.app.util import BaseValidate
+from app.util import BaseValidate
 from .dao import RouteDao
 from .model import Route
 
 
 class RouteBusiness(BaseValidate):
-    # Expressão regular para identificar padrão de número de telefone
-    _PHONE_REGEX = re.compile(r'\(\d{2}\)9\d{4}-\d{4}$')
+
+    _TIME_REGEX = re.compile(r'^(?:[01]\d|2[0-3]):[0-5]\d$')
+    _MONEY_REGEX = re.compile(r'^\d+(\.\d{2})?$')
 
     def __init__(self):
         self.__route_dao = RouteDao()
 
     def save(self, data):
+        data[Route.TIME] = Route.str_to_time(data[Route.TIME])
         route = self.__route_dao.save(Route(**data))  # atribui o id para eu retornar para a API
         return route
 
     def get(self, **kwargs):
-        if not kwargs:
-            return self.__route_dao.get_all()
-        elif kwargs.get('id'):
-            return self.__route_dao.get_by_id(kwargs['id'])
+        if kwargs.get('line_id'):
+            if kwargs.get('id'):
+                return self.__route_dao.get_by_id(kwargs['id'], kwargs['line_id'])
+            return self.__route_dao.get_all(kwargs['line_id'])
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 
     def update(self, current_route, new_route):
         new_route.id = current_route.id
         self.__route_dao.update(current_route, new_route)
 
-    def delete(self, id):
-        self.__route_dao.delete(id)
+    def delete(self, id, line_id):
+        self.__route_dao.delete(id, line_id)
 
     def reconnect(self):
         self.__route_dao.rollback()
 
-    def _validate_phone(self, phone):
-        if not self._PHONE_REGEX.match(phone):
-            return "The phone number is incorrect. Try a number format such as (xx)9xxxx-xxxx where x = digit."
+    def _validate_time(self, time):
+        if not self._TIME_REGEX.match(time):
+            return "The time is incorrect. Try a hour format such as 18:46, 05:16 and so on."
 
+    def _validate_price(self, price: str):
+        if not self._MONEY_REGEX.match(price):
+            return "The total price format is incorrect. Try a value such as 28.00, 159.99 and so on."
+        if not float(price) > 0:
+            return "The total price must be greater than 0."

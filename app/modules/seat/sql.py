@@ -18,6 +18,6 @@ class SqlSeat:
     _SELECT_BY_NUMBER = 'SELECT * FROM {} WHERE number = {} and bus_id = {};'
 
     # o number e bus id eu não altero porque é incrementado automaticamente pelo sistema caso o ônibus exista
-    _UPDATE = '''UPDATE {} SET is_free = %s, vacant_in = %s WHERE number = %s;'''
+    _UPDATE = '''UPDATE {} SET is_free = %s, vacant_in = %s WHERE number = %s AND bus_id = %s;'''
 
     _DELETE_ALL = 'DELETE FROM {} WHERE bus_id = {};'

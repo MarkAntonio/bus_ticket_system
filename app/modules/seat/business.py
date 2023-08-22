@@ -1,4 +1,4 @@
-from bus_ticket_system.app.util import BaseValidate
+from app.util import BaseValidate
 from .dao import SeatDao
 from .model import Seat
 

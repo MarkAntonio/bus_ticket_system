@@ -1,6 +1,6 @@
 import re
 
-from bus_ticket_system.app.util import BaseValidate
+from app.util import BaseValidate
 from .dao import PassengerDao
 from .model import Passenger
 
