@@ -10,7 +10,7 @@ bp = Blueprint("seat", "__name__", url_prefix=ROUTE)
 seat_business = SeatBusiness()
 
 
-# A rota ADD deve ser somente pelo sistema
+# A rota ADD deve ser acessada somente pelo sistema
 def add(data):
     try:
         # como é implementado pelo sistema, não preciso de validação
@@ -23,15 +23,14 @@ def add(data):
 
 
 @bp.route('/<int:bus_id>', methods=[GET])
-def get_all_by_bus(bus_id):
+def get(bus_id):
     try:
+        number = request.form.get(Seat.NUMBER)
         bus = bus_business.get(id=bus_id)
         if bus:
-            seats = seat_business.get(bus_id=bus_id)
-            if seats:
-                result = [seat.to_dict() for seat in seats]
-                return make_response(jsonify(result))
-            return make_response([])
+            if number:
+                return _get_by_number(bus_id, number)
+            return _get_all_by_bus(bus_id)
         return make_response(jsonify({'msg': f'Seats Bus ID {bus_id} not found'}), 404)
     except Exception:
         traceback.print_exc()
@@ -39,16 +38,19 @@ def get_all_by_bus(bus_id):
     return make_response(jsonify(DEFAULT_ERROR), 404)
 
 
-@bp.route('/', methods=[GET])
-def get_by_number():
-    try:
-        seat = seat_business.get(number=request.form.get(Seat.NUMBER), bus_id=request.form.get(Seat.BUS_ID))
-        if seat:
-            return make_response(jsonify(seat.to_dict()))
-    except Exception:
-        traceback.print_exc()
-        seat_business.reconnect()
+def _get_all_by_bus(bus_id):
+    seats = seat_business.get(bus_id=bus_id)
+    if seats:
+        result = [seat.to_dict() for seat in seats]
+        return make_response(jsonify(result))
+    return make_response([])
 
+
+def _get_by_number(bus_id, number):
+    seat = seat_business.get(number=number, bus_id=bus_id)
+    if seat:
+        return make_response(jsonify(seat.to_dict()))
+    return make_response(jsonify({'msg': f'Seat number {number} not found'}), 404)
 
 @bp.route('/', methods=[PUT])
 def update():

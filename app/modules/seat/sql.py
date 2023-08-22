@@ -12,9 +12,11 @@ class SqlSeat:
 
     _INSERT = f'''INSERT INTO {TABLE_NAME} (number, is_free, vacant_in, bus_id)
                  VALUES (%s, %s, %s, %s);'''
+
     # estou ordenando pelo número, pois percebi que quando atualizo um Seat ele muda de ordem no bd por não ter id.
     # Como quero sempre a ordem crescente quando eu dou um GET_ALL, por isso ordenei,
     _SELECT_ALL = 'SELECT * FROM {} where bus_id = {} ORDER BY NUMBER;'
+
     _SELECT_BY_NUMBER = 'SELECT * FROM {} WHERE number = {} and bus_id = {};'
 
     # o number e bus id eu não altero porque é incrementado automaticamente pelo sistema caso o ônibus exista

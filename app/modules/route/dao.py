@@ -21,10 +21,24 @@ class RouteDao:
         cursor.close()
         return route
 
-    def get_all(self, line_id: int):
+    def get_all(self):
         routes = []
         cursor = self.connection.cursor()
-        cursor.execute(SqlRoute._SELECT_ALL.format(SqlRoute.TABLE_NAME, line_id))
+        cursor.execute(SqlRoute._SELECT_ALL)
+        result = cursor.fetchall()
+        columns_name = [desc[0] for desc in cursor.description]
+
+        for row in result:
+            routes.append(self._create_object(columns_name, row))
+
+        cursor.close()
+        if routes:
+            return routes
+
+    def get_all_by_line(self, line_id: int):
+        routes = []
+        cursor = self.connection.cursor()
+        cursor.execute(SqlRoute._SELECT_ALL_BY_LINE.format(SqlRoute.TABLE_NAME, line_id))
         result = cursor.fetchall()
         columns_name = [desc[0] for desc in cursor.description]
 

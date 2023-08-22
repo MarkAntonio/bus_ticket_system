@@ -21,6 +21,8 @@ def add():
                 return make_response(jsonify(route.to_dict()), 201)
 
             return make_response(jsonify({'Message': error_msgs}), 400)
+        elif request.method == GET:
+            return _get_all()
 
     except Exception:
         traceback.print_exc()
@@ -28,19 +30,29 @@ def add():
     return make_response(jsonify(DEFAULT_ERROR), 404)
 
 
-@bp.route('/<int:line_id>', methods=[GET])
-def get_all_by_line(line_id):
+def _get_all():
+    try:
+        routes = route_business.get()
+        if routes:
+            result = [route.to_dict() for route in routes]
+            return make_response(jsonify(result))
+        return make_response([])
+    except Exception:
+        traceback.print_exc()
+        route_business.reconnect()
+    return make_response(jsonify(DEFAULT_ERROR), 404)
+
+
+def _get_all_by_line(line_id):
     try:
         line = line_business.get(id=line_id)
         if line:
-            id = request.form.get(Route.ID)
-            routes = route_business.get(line_id=line_id, id=id)
+            routes = route_business.get(line_id=line_id)
             if routes:
                 result = [route.to_dict() for route in routes]
                 return make_response(jsonify(result))
             return make_response([])
         return make_response({"Message": f"Line id {line_id} not found"}, 404)
-        print(line)
     except Exception:
         traceback.print_exc()
         route_business.reconnect()
@@ -49,12 +61,18 @@ def get_all_by_line(line_id):
 
 def _get_by_id(id, line_id):
     try:
-        route = route_business.get(id=id, line_id=line_id)
-        if route:
-            return route
+        line = line_business.get(id=line_id)
+        if line:
+            route = route_business.get(line_id=line_id, id=id)
+            if route:
+                return make_response(jsonify(route.to_dict()))
+            return make_response(jsonify({"Message": f"Route not found"}), 404)
+        return make_response(jsonify({"Message": f"Line id {line_id} not found"}), 404)
+
     except Exception:
         traceback.print_exc()
         route_business.reconnect()
+    return make_response(jsonify(DEFAULT_ERROR), 404)
 
 
 def _update():
@@ -99,7 +117,10 @@ def delete(line_id):
             return make_response({"Message": f"Line id {line_id} not found"}, 404)
 
         elif request.method == GET:
-            return _get_by_id(id, line_id)
+            if id:
+                return _get_by_id(id, line_id)
+            else:
+                return _get_all_by_line(line_id)
         elif request.method == PUT:
             return _update()
 

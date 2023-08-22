@@ -19,10 +19,13 @@ class RouteBusiness(BaseValidate):
         return route
 
     def get(self, **kwargs):
+        if not kwargs:
+            return self.__route_dao.get_all()
         if kwargs.get('line_id'):
             if kwargs.get('id'):
                 return self.__route_dao.get_by_id(kwargs['id'], kwargs['line_id'])
-            return self.__route_dao.get_all(kwargs['line_id'])
+            return self.__route_dao.get_all_by_line(kwargs['line_id'])
+
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 
     def update(self, current_route, new_route):
