@@ -14,7 +14,7 @@ class Route:
 
     _HOUR_FORMAT = '%H:%M'
 
-    def __init__(self, city: str, time: str, price:str, line_id:str, id=None):
+    def __init__(self, city: str, time: time, price:str, line_id:str, id=None):
         self.id = id
         self.city = city
         self.time = time

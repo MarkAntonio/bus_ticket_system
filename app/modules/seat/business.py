@@ -43,4 +43,4 @@ class SeatBusiness(BaseValidate):
         if vacant_in.upper() == 'NULL' and not self.__tag_is_free:
             return 'The seat is not FREE, so, the field vacant_in must be not NULL.'
 
-    # não preciso validar number, pois será incrementado pelo sistema. Logo não deve ter erros.
+    # não preciso validar number nem o bus_id, pois será incrementado pelo sistema. Logo não deve ter erros.

@@ -12,7 +12,7 @@ class RouteDao:
         cursor = self.connection.cursor()
         cursor.execute(SqlRoute._INSERT,
                        (route.city,
-                        route.time,
+                        Route.time_to_str(route.time),
                         route.price,
                         route.line_id)
                        )
@@ -49,9 +49,9 @@ class RouteDao:
         if routes:
             return routes
 
-    def get_by_id(self, id: int, line_id: int):
+    def get_by_id(self, id: int):
         cursor = self.connection.cursor()
-        cursor.execute(SqlRoute._SELECT_BY_ID.format(SqlRoute.TABLE_NAME, id, line_id))
+        cursor.execute(SqlRoute._SELECT_BY_ID.format(SqlRoute.TABLE_NAME, id))
         row = cursor.fetchone()
         if row:
             columns_name = [desc[0] for desc in cursor.description]
@@ -66,15 +66,15 @@ class RouteDao:
                         new_route.city,
                         Route.time_to_str(new_route.time),
                         new_route.price,
-                        str(current_route.id),
-                        str(current_route.line_id)
+                        current_route.line_id,
+                        str(current_route.id)
                         ))
         self.connection.commit()
         cursor.close()
 
-    def delete(self, id: int, line_id: int):
+    def delete(self, id: int):
         cursor = self.connection.cursor()
-        cursor.execute(SqlRoute._DELETE.format(SqlRoute.TABLE_NAME, id, line_id))
+        cursor.execute(SqlRoute._DELETE.format(SqlRoute.TABLE_NAME, id))
         self.connection.commit()
         cursor.close()
 

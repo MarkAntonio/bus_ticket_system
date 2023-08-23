@@ -4,6 +4,7 @@ from app.modules.line import SqlLine
 from app.modules.passenger import SqlPassenger
 from app.modules.seat import SqlSeat
 from app.modules.route import SqlRoute
+from app.modules.trip import SqlTrip
 
 
 class ConnectDataBase:
@@ -23,6 +24,7 @@ class ConnectDataBase:
         cursor.execute(SqlPassenger._CREATE_TABLE)
         cursor.execute(SqlSeat._CREATE_TABLE)
         cursor.execute(SqlRoute._CREATE_TABLE)
+        cursor.execute(SqlTrip._CREATE_TABLE)
         self._connect.commit()  # Commitando para que o comando seja realizado
         cursor.close()  # fechando a conexão
 
