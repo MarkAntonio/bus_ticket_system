@@ -1,4 +1,5 @@
 import re  # Regular Expressions
+import traceback
 
 from app.util import BaseValidate
 from .model import Bus
@@ -20,16 +21,22 @@ class BusBusiness(BaseValidate):
         bus = self.__bus_dao.save(Bus(**data))  # atribui o id para eu retornar para a AP
         try:
             self._create_seats(bus)
-        except Exception:
+            return bus
+        except Exception as e:
+            traceback.print_exc()
             # se der errado na criação nos assentos, eu tenho que deletar o ônibus para não o ônibus sem assentos no db.
             self.delete(bus.id)
-        return bus
+            raise e
 
     def _create_seats(self, bus: Bus):
         # como o atributo amount_seat está como string quando volta da base, devo tranformá-lo em int
         for number in range(1, int(bus.amount_seats) + 1):
-            seat = {Seat.NUMBER: number, Seat.IS_FREE: True, Seat.VACANT_IN: None, Seat.BUS_ID: bus.id}
-            self._seat_business.save(seat)
+            # o seat id é gerado pelo sistema e não pelo banco de dados
+            # o seat id depende da placa do ônibus e do número do assento
+            # ex: Seat id= KHA9H12-3
+            id = bus.license_plate + '-' + str(number)
+            data = {Seat.ID: id, Seat.NUMBER: number, Seat.IS_FREE: True, Seat.VACANT_IN: None, Seat.BUS_ID: bus.id}
+            self._seat_business.save(data)
 
     def get(self, **kwargs):
         if not kwargs:
@@ -47,7 +54,7 @@ class BusBusiness(BaseValidate):
 
     def delete(self, id):
         # Deleto todos os assentos que pertencem ao ônibus antes de deletar o ônibus
-        self._seat_business.delete(id)
+        # self._seat_business.delete(id)
         self.__bus_dao.delete(id)
 
     def _validate_license_plate(self, license):

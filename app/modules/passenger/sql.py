@@ -11,4 +11,4 @@ class SqlPassenger:
     _SELECT_ALL = f'SELECT * FROM {TABLE_NAME};'
     _SELECT_BY_ID = 'SELECT * FROM {} WHERE id = {};'
     _UPDATE = '''UPDATE {} SET name = %s, phone = %s WHERE id = %s;'''
-    _DELETE = 'DELETE FROM {} WHERE id = {};'
+    _DELETE = 'DELETE FROM {} WHERE id = {} CASCADE;'

@@ -11,7 +11,8 @@ class SeatDao:
     def save(self, seat: Seat):
         cursor = self.connection.cursor()
         cursor.execute(SqlSeat._INSERT,
-                       (seat.number,
+                       (seat.id,
+                        seat.number,
                         seat.is_free,
                         seat.vacant_in,
                         seat.bus_id)
@@ -34,9 +35,9 @@ class SeatDao:
         if seats:
             return seats
 
-    def get_by_number(self, number, bus_id):
+    def get_by_id(self, id):
         cursor = self.connection.cursor()
-        cursor.execute(SqlSeat._SELECT_BY_NUMBER.format(SqlSeat.TABLE_NAME, number, bus_id))
+        cursor.execute(SqlSeat._SELECT_BY_ID.format(SqlSeat.TABLE_NAME, id))
         row = cursor.fetchone()
         if row:
             columns_name = [desc[0] for desc in cursor.description]
@@ -46,11 +47,12 @@ class SeatDao:
 
     def update(self, current_seat: Seat, new_seat: Seat):
         cursor = self.connection.cursor()
-        cursor.execute(SqlSeat._UPDATE.format(SqlSeat.TABLE_NAME), (
-            new_seat.is_free,
-            new_seat.vacant_in,
-            str(current_seat.number),
-            str(current_seat.bus_id)))
+        cursor.execute(SqlSeat._UPDATE.format(SqlSeat.TABLE_NAME),
+                       (
+                           new_seat.is_free,
+                           new_seat.vacant_in,
+                           str(current_seat.id)
+                       ))
         self.connection.commit()
         cursor.close()
 

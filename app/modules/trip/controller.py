@@ -4,6 +4,9 @@ from flask import Blueprint, make_response, jsonify, request, Response
 
 from app.util import GET, POST, DELETE, PUT, DEFAULT_ERROR
 from .business import TripBusiness
+from app.modules.bus.controller import bus_business
+from app.modules.line.controller import line_business
+
 from .model import Trip
 
 ROUTE = '/trip'
@@ -17,8 +20,14 @@ def add():
             data = request.form.to_dict()
             has_error, error_msgs = trip_business.validate_fields(data, Trip.FIELDS)
             if not has_error:
-                trip = trip_business.save(data)  # retorna o Trip com o id gerado na base
-                return make_response(jsonify(trip.to_dict()), 201)
+                bus_id = data[Trip.BUS_ID]
+                if bus_business.get(id=bus_id):
+                    line_id = data[Trip.LINE_ID]
+                    if line_business.get(id=line_id):
+                        trip = trip_business.save(data)  # retorna o Trip com o id gerado na base
+                        return make_response(jsonify(trip.to_dict()), 201)
+                    return make_response(jsonify({"Message": f"Line id {line_id} not found"}), 404)
+                return make_response(jsonify({"Message": f"Bus id {bus_id} not found"}), 404)
 
             return make_response(jsonify({'Message': error_msgs}), 400)
 
@@ -60,9 +69,16 @@ def _update(id):
     if not has_error:
         current_trip = trip_business.get(id=id)
         if current_trip:
-            new_trip = Trip(**data, id=id)
-            trip_business.update(current_trip, new_trip)
-            return make_response(jsonify(new_trip.to_dict()))
+            bus_id = data[Trip.BUS_ID]
+            if bus_business.get(id=bus_id):
+                line_id = data[Trip.LINE_ID]
+                if line_business.get(id=line_id):
+                    new_trip = Trip(**data, id=id)
+                    trip_business.update(current_trip, new_trip)
+                    return make_response(jsonify(new_trip.to_dict()))
+                return make_response(jsonify({"Message": f"Line id {line_id} not found"}), 404)
+            return make_response(jsonify({"Message": f"Bus id {bus_id} not found"}), 404)
+
         return make_response({"Error": "Trip id not found"}, 404)
 
     return make_response(jsonify({'Message': error_msgs}), 400)

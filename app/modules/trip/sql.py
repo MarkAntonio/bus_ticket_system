@@ -1,10 +1,10 @@
 class SqlTrip:
     TABLE_NAME = 'trip'
     _CREATE_TABLE = f'CREATE TABLE IF NOT EXISTS {TABLE_NAME}(' \
-                        '''id SERIAL PRIMARY KEY,
+                         '''id SERIAL PRIMARY KEY,
                             date DATE NOT NULL,
-                            line_id SMALLINT NOT NULL REFERENCES line(id),
-                            bus_id SMALLINT NOT NULL REFERENCES bus(id)
+                            line_id SMALLINT NOT NULL REFERENCES line(id) ON DELETE CASCADE,
+                            bus_id SMALLINT NOT NULL REFERENCES bus(id) ON DELETE SET NULL
                         );'''
 
     _INSERT = f'''INSERT INTO {TABLE_NAME} (date, line_id, bus_id)

@@ -5,7 +5,7 @@ class SqlRoute:
                             city VARCHAR(50) NOT NULL,
                             time Time NOT NULL,
                             price NUMERIC(6, 2) NOT NULL,
-                            line_id SMALLINT NOT NULL REFERENCES line(id)
+                            line_id SMALLINT NOT NULL REFERENCES line(id) ON DELETE CASCADE
                         );'''
 
     _INSERT = f'''INSERT INTO {TABLE_NAME} (city, time, price, line_id)

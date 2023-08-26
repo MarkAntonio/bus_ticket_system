@@ -1,6 +1,7 @@
 from app.util import BaseValidate
 from .dao import SeatDao
 from .model import Seat
+from ..bus import Bus
 
 
 class SeatBusiness(BaseValidate):
@@ -15,9 +16,9 @@ class SeatBusiness(BaseValidate):
 
     def get(self, **kwargs):
         if kwargs.get('bus_id'):
-            if kwargs.get('number'):
-                return self.__seat_dao.get_by_number(kwargs['number'], kwargs['bus_id'])
             return self.__seat_dao.get_all(kwargs['bus_id'])
+        if kwargs.get('id'):
+            return self.__seat_dao.get_by_id(kwargs['id'])
 
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 
