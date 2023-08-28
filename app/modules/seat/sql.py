@@ -17,7 +17,8 @@ class SqlSeat:
     # Como quero sempre a ordem crescente quando eu dou um GET_ALL, por isso ordenei,
     _SELECT_ALL = 'SELECT * FROM {} where bus_id = {} ORDER BY NUMBER;'
 
-    _SELECT_BY_ID = 'SELECT * FROM {} WHERE id = {};'
+    # Como o id é string eu tenho que colocar as aspas
+    _SELECT_BY_ID = "SELECT * FROM {} WHERE id = '{}';"
 
     # o number e bus id eu não altero porque é incrementado automaticamente pelo sistema caso o ônibus exista
     _UPDATE = '''UPDATE {} SET is_free = %s, vacant_in = %s WHERE id = %s;'''

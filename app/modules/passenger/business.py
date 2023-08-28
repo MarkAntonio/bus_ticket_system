@@ -19,8 +19,8 @@ class PassengerBusiness(BaseValidate):
     def get(self, **kwargs):
         if not kwargs:
             return self.__passenger_dao.get_all()
-        elif kwargs.get('id'):
-            return self.__passenger_dao.get_by_id(kwargs['id'])
+        elif kwargs.get(Passenger.ID):
+            return self.__passenger_dao.get_by_id(kwargs[Passenger.ID])
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 
     def update(self, current_passenger, new_passenger):

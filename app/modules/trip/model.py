@@ -25,7 +25,7 @@ class Trip:
     def to_dict(self):
         return {
             self.ID: self.id,
-            self.DATE: self.date,
+            self.DATE: self.datetime_to_str(self.date),
             self.LINE_ID: self.line_id,
             self.BUS_ID: self.bus_id
         }

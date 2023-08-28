@@ -11,11 +11,12 @@ class RouteDao:
     def save(self, route: Route):
         cursor = self.connection.cursor()
         cursor.execute(SqlRoute._INSERT,
-                       (route.city,
-                        Route.time_to_str(route.time),
-                        route.price,
-                        route.line_id)
-                       )
+                       (
+                           route.city,
+                           Route.time_to_str(route.time),
+                           route.price,
+                           route.line_id
+                       ))
         self.connection.commit()
         route.id = cursor.fetchone()[0]
         cursor.close()
@@ -63,12 +64,21 @@ class RouteDao:
         cursor = self.connection.cursor()
         cursor.execute(SqlRoute._UPDATE.format(SqlRoute.TABLE_NAME),
                        (
-                        new_route.city,
-                        Route.time_to_str(new_route.time),
-                        new_route.price,
-                        current_route.line_id,
-                        str(current_route.id)
-                        ))
+                           new_route.city,
+                           Route.time_to_str(new_route.time),
+                           new_route.price,
+                           current_route.line_id,
+                           str(current_route.id)
+                       ))
+        self.connection.commit()
+        cursor.close()
+
+    def set_line_id(self, id, line_id):
+        cursor = self.connection.cursor()
+        cursor.execute(SqlRoute._UPDATE.format(SqlRoute.TABLE_NAME), (
+            str(line_id),
+            str(id)
+        ))
         self.connection.commit()
         cursor.close()
 

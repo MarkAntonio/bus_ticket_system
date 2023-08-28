@@ -41,12 +41,12 @@ class BusBusiness(BaseValidate):
     def get(self, **kwargs):
         if not kwargs:
             return self.__bus_dao.get_all()
-        elif kwargs.get('id'):
-            return self.__bus_dao.get_by_id(kwargs['id'])
-        elif kwargs.get('license_plate'):
-            return self.__bus_dao.get_by_license(kwargs['license_plate'])
-        elif kwargs.get('type'):
-            return self.__bus_dao.get_all_by_type(kwargs['type'])
+        elif kwargs.get(Bus.ID):
+            return self.__bus_dao.get_by_id(kwargs[Bus.ID])
+        elif kwargs.get(Bus.LICENSE_PLATE):
+            return self.__bus_dao.get_by_license(kwargs[Bus.LICENSE_PLATE])
+        elif kwargs.get(Bus.TYPE):
+            return self.__bus_dao.get_all_by_type(kwargs[Bus.TYPE])
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 
     def update(self, current_bus, new_bus):

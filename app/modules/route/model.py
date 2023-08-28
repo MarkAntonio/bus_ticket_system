@@ -10,11 +10,11 @@ class Route:
     # A cidade inicial tem o preço total que está na Line. Aqui teremos as cidades que intermedeiam a linha do ônibus.
     PRICE = 'price'
     LINE_ID = 'line_id'
-    FIELDS = [CITY, TIME, PRICE, LINE_ID]
+    FIELDS = [CITY, TIME, PRICE]
 
     _HOUR_FORMAT = '%H:%M'
 
-    def __init__(self, city: str, time: time, price:str, line_id:str, id=None):
+    def __init__(self, city: str, time: time, price:str, line_id=None, id=None):
         self.id = id
         self.city = city
         self.time = time

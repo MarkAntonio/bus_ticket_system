@@ -14,5 +14,5 @@ class SqlLine:
     _SELECT_ALL = f'SELECT * FROM {TABLE_NAME};'
     _SELECT_BY_ID = 'SELECT * FROM {} WHERE id = {};'
     _UPDATE = '''UPDATE {} SET origin = %s, destination = %s, 
-                 departure_time = %s, arrival_time = %s, total_price = %s WHERE id = %s;'''
+                 departure_time = %s, arrival_time = %s, routes = %s, total_price = %s WHERE id = %s;'''
     _DELETE = 'DELETE FROM {} WHERE id = {};'

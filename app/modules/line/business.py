@@ -1,8 +1,11 @@
 import re
+import traceback
 
 from app.util import BaseValidate
 from .dao import LineDao
 from .model import Line
+from app.modules.route.business import RouteBusiness
+from app.modules.route import Route
 
 
 class LineBusiness(BaseValidate):
@@ -21,22 +24,51 @@ class LineBusiness(BaseValidate):
     # (\.\d{2})? - Indica que no final pode ou não ter um . e 2 dígitos
     # dessa forma aceitará valores como: 1, 20, 25.99 etc. O Banco de dados transformará de 2 para 2.00
 
+    _route_business = RouteBusiness()
+
     def __init__(self):
         self.__line_dao = LineDao()
 
     def save(self, data):
         # tranformando as strings de hora em formato datetime.time para criar o objeto
         data[Line.DEPARTURE_TIME] = Line.str_to_time(data[Line.DEPARTURE_TIME])
-        data['arrival_time'] = Line.str_to_time(data[Line.ARRIVAL_TIME])
+        data[Line.ARRIVAL_TIME] = Line.str_to_time(data[Line.ARRIVAL_TIME])
 
         line = self.__line_dao.save(Line(**data))  # atribui o id para eu retornar para a API
+        try:
+            self.__create_initial_routes(line)
+        except Exception as exception:
+            traceback.print_exc()
+            raise exception
         return line
+
+    def __create_initial_routes(self, line: Line):
+        # criando rota inicial
+        inicial_route = self._route_business.save(
+            {
+                Route.CITY: line.origin,
+                Route.TIME: Line.time_to_str(line.departure_time),
+                Route.PRICE: '0.00',
+                Route.LINE_ID: line.id
+            }
+        )
+        # criando a rota final
+        final_route = self._route_business.save(
+            {
+                Route.CITY: line.destination,
+                Route.TIME: Line.time_to_str(line.arrival_time),
+                Route.PRICE: line.total_price,
+                Route.LINE_ID: line.id
+            }
+        )
+        if not inicial_route or not final_route:
+            raise Exception
 
     def get(self, **kwargs):
         if not kwargs:
             return self.__line_dao.get_all()
-        elif kwargs.get('id'):
-            return self.__line_dao.get_by_id(kwargs['id'])
+        elif kwargs.get(Line.ID):
+            return self.__line_dao.get_by_id(kwargs[Line.ID])
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 
     def update(self, current_line, new_line):

@@ -15,10 +15,10 @@ class SeatBusiness(BaseValidate):
         return seat
 
     def get(self, **kwargs):
-        if kwargs.get('bus_id'):
-            return self.__seat_dao.get_all(kwargs['bus_id'])
-        if kwargs.get('id'):
-            return self.__seat_dao.get_by_id(kwargs['id'])
+        if kwargs.get(Seat.BUS_ID):
+            return self.__seat_dao.get_all(kwargs[Seat.BUS_ID])
+        if kwargs.get(Seat.ID):
+            return self.__seat_dao.get_by_id(kwargs[Seat.ID])
 
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 

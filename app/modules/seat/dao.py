@@ -35,7 +35,7 @@ class SeatDao:
         if seats:
             return seats
 
-    def get_by_id(self, id):
+    def get_by_id(self, id: str):
         cursor = self.connection.cursor()
         cursor.execute(SqlSeat._SELECT_BY_ID.format(SqlSeat.TABLE_NAME, id))
         row = cursor.fetchone()

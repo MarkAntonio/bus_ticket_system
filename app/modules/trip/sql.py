@@ -4,7 +4,7 @@ class SqlTrip:
                          '''id SERIAL PRIMARY KEY,
                             date DATE NOT NULL,
                             line_id SMALLINT NOT NULL REFERENCES line(id) ON DELETE CASCADE,
-                            bus_id SMALLINT NOT NULL REFERENCES bus(id) ON DELETE SET NULL
+                            bus_id SMALLINT REFERENCES bus(id) ON DELETE SET NULL
                         );'''
 
     _INSERT = f'''INSERT INTO {TABLE_NAME} (date, line_id, bus_id)

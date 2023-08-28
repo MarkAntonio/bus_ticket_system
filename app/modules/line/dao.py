@@ -58,7 +58,6 @@ class LineDao:
         self.connection.commit()
         cursor.close()
 
-
     def delete(self, id: int):
         cursor = self.connection.cursor()
         cursor.execute(SqlLine._DELETE.format(SqlLine.TABLE_NAME, id))

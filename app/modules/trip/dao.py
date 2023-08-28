@@ -45,20 +45,6 @@ class TripDao:
             trip = self._create_object(columns_name, row)
             return trip
 
-    # def get_all_by_type(self, type: str):
-    #     trips = []
-    #     cursor = self.connection.cursor()
-    #     cursor.execute(SqlTrip._SEARCH_TYPES.format(SqlTrip.TABLE_NAME, type))
-    #     result = cursor.fetchall()
-    #     columns_name = [desc[0] for desc in cursor.description]
-    #     cursor.close()
-    #
-    #     for row in result:
-    #         trips.append(self._create_object(columns_name, row))
-    #
-    #     if trips:
-    #         return trips
-
     def update(self, current_trip: Trip, new_trip: Trip):
         cursor = self.connection.cursor()
         cursor.execute(SqlTrip._UPDATE.format(SqlTrip.TABLE_NAME),
