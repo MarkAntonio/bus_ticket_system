@@ -1,12 +1,10 @@
 from app.database import ConnectDataBase
 from .model import Passenger
 from .sql import SqlPassenger
+from app.util import BaseDAO
 
+class PassengerDao(BaseDAO):
 
-class PassengerDao:
-
-    def __init__(self):
-        self.connection = ConnectDataBase().get_instance()
 
     def save(self, passenger: Passenger):
         cursor = self.connection.cursor()
@@ -27,7 +25,7 @@ class PassengerDao:
         columns_name = [desc[0] for desc in cursor.description]
 
         for row in result:
-            passengers.append(self._create_object(columns_name, row))
+            passengers.append(self._create_object(columns_name, row, Passenger))
 
         cursor.close()
         if passengers:
@@ -40,7 +38,7 @@ class PassengerDao:
         if row:
             columns_name = [desc[0] for desc in cursor.description]
             cursor.close()
-            passenger = self._create_object(columns_name, row)
+            passenger = self._create_object(columns_name, row, Passenger)
             return passenger
 
     def update(self, current_passenger: Passenger, new_passenger: Passenger):
@@ -57,13 +55,3 @@ class PassengerDao:
         cursor.execute(SqlPassenger._DELETE.format(SqlPassenger.TABLE_NAME, id))
         self.connection.commit()
         cursor.close()
-
-    def _create_object(self, columns_name, data):
-        if data:
-            data = dict(zip(columns_name, data))
-            passenger = Passenger(**data)
-            return passenger
-        return None
-
-    def rollback(self):
-        self.connection.rollback()

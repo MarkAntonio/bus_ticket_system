@@ -1,10 +1,11 @@
-from flask import Request
+from app.database import ConnectDataBase
 
 POST = "POST"
 GET = "GET"
 DELETE = "DELETE"
 PUT = "PUT"
 DEFAULT_ERROR = {'Message': 'Ocorreu um erro. Tente novamente ou fale com o suporte.'}
+
 
 class BaseValidate:
     def validate_fields(self, data: dict, required_fields: list):
@@ -37,3 +38,61 @@ class BaseValidate:
                         error_msgs.append(data_value)
                         error_flag = True
         return error_flag, error_msgs
+
+
+class BaseDAO:
+    def __init__(self):
+        self.connection = ConnectDataBase().get_instance()
+
+    # método save está desenvolvido parcialmente e deve ser finalizado na classe que o herdar de acordo com a necessidade
+    # lembrando sempre de fechar o cursor
+    def _save(self, sql, obj_tuple):
+        cursor = self.connection.cursor()
+        cursor.execute(sql, obj_tuple)
+        self.connection.commit()
+        return cursor
+
+    def _get_all(self, sql, Obj_class):
+        objects = []
+        cursor = self.connection.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        columns_name = [desc[0] for desc in cursor.description]
+
+        for row in result:
+            objects.append(self._create_object(columns_name, row, Obj_class))
+
+        cursor.close()
+        if objects:
+            return objects
+
+    def _get_by(self, sql: str, Obj_class):
+        cursor = self.connection.cursor()
+        cursor.execute(sql)
+        row = cursor.fetchone()
+        if row:
+            columns_name = [desc[0] for desc in cursor.description]
+            cursor.close()
+            bus = self._create_object(columns_name, row, Obj_class)
+            return bus
+
+    def _create_object(self, columns_name, data, Obj_class):
+        if data:
+            data = dict(zip(columns_name, data))
+            return Obj_class(**data)
+        return None
+
+    def _update(self, sql, objetcs_tuple: tuple):
+        cursor = self.connection.cursor()
+        cursor.execute(sql, objetcs_tuple)
+        self.connection.commit()
+        cursor.close()
+
+    def _delete(self, sql):
+        cursor = self.connection.cursor()
+        cursor.execute(sql)
+        self.connection.commit()
+        cursor.close()
+
+    def rollback(self):
+        self.connection.rollback()

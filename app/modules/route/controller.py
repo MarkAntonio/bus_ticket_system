@@ -100,32 +100,6 @@ def _update(id):
     return jsonify(DEFAULT_ERROR)
 
 
-# @bp.route('/<int:line_id>', methods=[GET, DELETE, PUT])
-# def delete(line_id):
-#     try:
-#         id = request.form.get(Route.ID)
-#         if request.method == DELETE:
-#             # verficando se a Line existe
-#             if line_business.get(id=line_id):
-#                 # verificando se a Route existe
-#                 if route_business.get(id=id):
-#                     route_business.delete(id, line_id)
-#                     return Response(status=204)
-#                 return make_response({"Message": f"Route id {id} not found"}, 404)
-#             return make_response({"Message": f"Line id {line_id} not found"}, 404)
-#
-#         elif request.method == GET:
-#             if id:
-#                 return _get_by_id(id, line_id)
-#             else:
-#                 return _get_all_by_line(line_id)
-#         elif request.method == PUT:
-#             return _update()
-#     except Exception:
-#         traceback.print_exc()
-#         route_business.reconnect()
-#     return make_response(jsonify(DEFAULT_ERROR), 404)
-
 @bp.route('/<int:id>', methods=[GET, DELETE, PUT])
 def delete(id):
     try:

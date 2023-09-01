@@ -1,6 +1,3 @@
-from datetime import datetime, time
-
-
 class Seat:
     ID = 'id'
     NUMBER = 'number'

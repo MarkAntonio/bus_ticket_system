@@ -1,12 +1,9 @@
-from app.database import ConnectDataBase
+from app.util import BaseDAO
 from .model import Trip
 from .sql import SqlTrip
 
 
-class TripDao:
-
-    def __init__(self):
-        self.connection = ConnectDataBase().get_instance()
+class TripDao(BaseDAO):
 
     def save(self, trip: Trip):
         cursor = self.connection.cursor()
@@ -29,7 +26,7 @@ class TripDao:
         columns_name = [desc[0] for desc in cursor.description]
 
         for row in result:
-            trips.append(self._create_object(columns_name, row))
+            trips.append(self._create_object(columns_name, row, Trip))
 
         cursor.close()
         if trips:
@@ -42,7 +39,7 @@ class TripDao:
         if row:
             columns_name = [desc[0] for desc in cursor.description]
             cursor.close()
-            trip = self._create_object(columns_name, row)
+            trip = self._create_object(columns_name, row, Trip)
             return trip
 
     def update(self, current_trip: Trip, new_trip: Trip):
@@ -62,13 +59,3 @@ class TripDao:
         cursor.execute(SqlTrip._DELETE.format(SqlTrip.TABLE_NAME, id))
         self.connection.commit()
         cursor.close()
-
-    def _create_object(self, columns_name, data):
-        if data:
-            data = dict(zip(columns_name, data))
-            trip = Trip(**data)
-            return trip
-        return None
-
-    def rollback(self):
-        self.connection.rollback()

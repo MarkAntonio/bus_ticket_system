@@ -1,12 +1,10 @@
-from app.database import ConnectDataBase
+from app.util import BaseDAO
 from .model import Seat
 from .sql import SqlSeat
 
 
-class SeatDao:
+class SeatDao(BaseDAO):
 
-    def __init__(self):
-        self.connection = ConnectDataBase().get_instance()
 
     def save(self, seat: Seat):
         cursor = self.connection.cursor()
@@ -29,7 +27,7 @@ class SeatDao:
         columns_name = [desc[0] for desc in cursor.description]
 
         for row in result:
-            seats.append(self._create_object(columns_name, row))
+            seats.append(self._create_object(columns_name, row, Seat))
 
         cursor.close()
         if seats:
@@ -42,7 +40,7 @@ class SeatDao:
         if row:
             columns_name = [desc[0] for desc in cursor.description]
             cursor.close()
-            seat = self._create_object(columns_name, row)
+            seat = self._create_object(columns_name, row, Seat)
             return seat
 
     def update(self, current_seat: Seat, new_seat: Seat):
@@ -56,18 +54,6 @@ class SeatDao:
         self.connection.commit()
         cursor.close()
 
-    def delete_all(self, bus_id: int):
-        cursor = self.connection.cursor()
-        cursor.execute(SqlSeat._DELETE_ALL.format(SqlSeat.TABLE_NAME, bus_id))
-        self.connection.commit()
-        cursor.close()
+    # delete não está sendo usado, pois quando eu deleto um Bus ele deleta em cascade todos os Seats que tem o mesmo
+    # bus_id do bus
 
-    def _create_object(self, columns_name, data):
-        if data:
-            data = dict(zip(columns_name, data))
-            seat = Seat(**data)
-            return seat
-        return None
-
-    def rollback(self):
-        self.connection.rollback()

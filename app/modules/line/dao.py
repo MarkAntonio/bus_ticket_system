@@ -1,12 +1,10 @@
 from app.database import ConnectDataBase
 from .model import Line
 from .sql import SqlLine
+from app.util import BaseDAO
 
 
-class LineDao:
-
-    def __init__(self):
-        self.connection = ConnectDataBase().get_instance()
+class LineDao(BaseDAO):
 
     def save(self, line: Line):
         cursor = self.connection.cursor()
@@ -30,7 +28,7 @@ class LineDao:
         columns_name = [desc[0] for desc in cursor.description]
 
         for row in result:
-            lines.append(self._create_object(columns_name, row))
+            lines.append(self._create_object(columns_name, row, Line))
 
         cursor.close()
         if lines:
@@ -43,7 +41,7 @@ class LineDao:
         if row:
             columns_name = [desc[0] for desc in cursor.description]
             cursor.close()
-            line = self._create_object(columns_name, row)
+            line = self._create_object(columns_name, row, Line)
             return line
 
     def update(self, current_line: Line, new_line: Line):
@@ -63,13 +61,3 @@ class LineDao:
         cursor.execute(SqlLine._DELETE.format(SqlLine.TABLE_NAME, id))
         self.connection.commit()
         cursor.close()
-
-    def _create_object(self, columns_name, data):
-        if data:
-            data = dict(zip(columns_name, data))
-            line = Line(**data)
-            return line
-        return None
-
-    def rollback(self):
-        self.connection.rollback()

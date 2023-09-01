@@ -13,6 +13,7 @@ ROUTE = '/trip'
 bp = Blueprint("trip", "__name__", url_prefix=ROUTE)
 trip_business = TripBusiness()
 
+
 @bp.route("/", methods=[POST, GET])
 def add():
     try:
@@ -41,9 +42,9 @@ def add():
 
 
 def _get_all():
-    tripes = trip_business.get()
-    if tripes:
-        result = [trip.to_dict() for trip in tripes]
+    trips = trip_business.get()
+    if trips:
+        result = [trip.to_dict() for trip in trips]
         return make_response(jsonify(result), 200)
     return make_response([])
 
@@ -53,15 +54,6 @@ def _get_by_id(id):
     if trip:
         return make_response(jsonify(trip.to_dict()), 200)
     return make_response(jsonify({"Message": "Trip id not found"}), 404)
-
-
-# def _search_all_by_type(type: str):
-#     tripes = trip_business.get(type=type)
-#     if tripes:
-#         result = [trip.to_dict() for trip in tripes]
-#         return make_response(jsonify(result), 200)
-#     return make_response({}, 404)
-
 
 def _update(id):
     data = request.form.to_dict()

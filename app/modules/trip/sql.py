@@ -13,4 +13,3 @@ class SqlTrip:
     _SELECT_BY_ID = 'SELECT * FROM {} WHERE id = {};'
     _UPDATE = 'UPDATE {} SET date = %s, line_id = %s, bus_id = %s WHERE id = %s;'
     _DELETE = 'DELETE FROM {} WHERE id = {};'
-    # _SEARCH_BY_ROUTE = "SELECT * FROM {} WHERE type ILIKE '%{}%';" # quero todos por tipo

@@ -1,7 +1,7 @@
 class SqlSeat:
 
     TABLE_NAME = 'seat'
-    # o id é incrementado pelo sistema
+    # o id é incrementado pelo sistema, logo, não é SERIAL
     _CREATE_TABLE = f'CREATE TABLE IF NOT EXISTS seat(' \
                     '''id VARCHAR(10) NOT NULL PRIMARY KEY,
                        number SMALLINT NOT NULL,

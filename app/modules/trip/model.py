@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class Trip:
     ID = 'id'
     DATE = 'date'
@@ -14,6 +15,7 @@ class Trip:
         self.date = date
         self.line_id = line_id
         self.bus_id = bus_id
+
     @classmethod
     def str_to_datetime(cls, trip_date: str):
         return datetime.strptime(trip_date, cls.DATE_FORMAT)

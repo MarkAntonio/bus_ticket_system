@@ -17,19 +17,6 @@ class SqlTicket:
     _SELECT_ALL = f'SELECT * FROM {TABLE_NAME};'
     _SELECT_BY_ID = 'SELECT * FROM {} WHERE id = {};'
 
-    """
-    Exemplo do Ticket
-    Passageiro: Fulano
-    Origem: Triunfo
-    Destino: Arco Verde
-    Data: 2023-09-12
-    Horário: 12:30
-    Poltrona: 12
-    Id do ônibus: 3 
-    Classe: Convencional
-    Linha: Petrolina(PE) - Serra Talhada(PE)
-    Preço: 
-    """
     _SELECT_JOIN = '''SELECT p.name as passenger,
                         o.city as origin,
                         d.city as destination, 
@@ -55,4 +42,3 @@ class SqlTicket:
     _SELECT_BY_PASSENGER_ID = 'SELECT * FROM {} WHERE passenger_id = {};'
     _UPDATE = 'UPDATE {} SET route_price = %s, passenger_id = %s, trip_id = %s, seat_id = %s WHERE id = %s;'
     _DELETE = 'DELETE FROM {} WHERE id = {};'
-    # _SEARCH_BY_ROUTE = "SELECT * FROM {} WHERE type ILIKE '%{}%';" # quero todos por tipo

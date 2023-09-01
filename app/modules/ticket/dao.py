@@ -1,12 +1,9 @@
-from app.database import ConnectDataBase
+from app.util import BaseDAO
 from .model import Ticket
 from .sql import SqlTicket
 
 
-class TicketDao:
-
-    def __init__(self):
-        self.connection = ConnectDataBase().get_instance()
+class TicketDao(BaseDAO):
 
     def save(self, ticket: Ticket):
         cursor = self.connection.cursor()
@@ -32,7 +29,7 @@ class TicketDao:
         columns_name = [desc[0] for desc in cursor.description]
 
         for row in result:
-            tickets.append(self._create_object(columns_name, row))
+            tickets.append(self._create_object(columns_name, row, Ticket))
 
         cursor.close()
         if tickets:
@@ -45,7 +42,7 @@ class TicketDao:
         if row:
             columns_name = [desc[0] for desc in cursor.description]
             cursor.close()
-            ticket = self._create_object(columns_name, row)
+            ticket = self._create_object(columns_name, row, Ticket)
             return ticket
 
     def get_join(self, id: int) -> dict:
@@ -55,7 +52,7 @@ class TicketDao:
         if row:
             columns_name = [desc[0] for desc in cursor.description]
             cursor.close()
-            return dict(zip(columns_name, row))
+            return dict(zip(columns_name, row, Ticket))
 
     def update(self, current_ticket: Ticket, new_ticket: Ticket):
         cursor = self.connection.cursor()
@@ -77,13 +74,3 @@ class TicketDao:
         cursor.execute(SqlTicket._DELETE.format(SqlTicket.TABLE_NAME, id))
         self.connection.commit()
         cursor.close()
-
-    def _create_object(self, columns_name, data):
-        if data:
-            data = dict(zip(columns_name, data))
-            ticket = Ticket(**data)
-            return ticket
-        return None
-
-    def rollback(self):
-        self.connection.rollback()

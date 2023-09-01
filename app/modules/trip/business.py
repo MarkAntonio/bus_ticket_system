@@ -1,10 +1,9 @@
 import re  # Regular Expressions
 from datetime import date
-from app.util import BaseValidate
-from .model import Trip
-from .dao import TripDao
 
-from app.modules.seat import Seat
+from app.util import BaseValidate
+from .dao import TripDao
+from .model import Trip
 
 
 class TripBusiness(BaseValidate):
@@ -42,11 +41,11 @@ class TripBusiness(BaseValidate):
         if int(year) < self._CURRENT_YEAR:
             return f"Try put a year >= {self._CURRENT_YEAR}."
 
-    def _validate_bus_id(self, bus_id:str):
+    def _validate_bus_id(self, bus_id: str):
         if not bus_id.isnumeric():
             return 'Bus id must be a number.'
 
-    def _validate_line_id(self, line_id:str):
+    def _validate_line_id(self, line_id: str):
         if not line_id.isnumeric():
             return 'Line id must be a number.'
 

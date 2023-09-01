@@ -1,12 +1,8 @@
-from app.database import ConnectDataBase
 from .model import Route
 from .sql import SqlRoute
+from app.util import BaseDAO
 
-
-class RouteDao:
-
-    def __init__(self):
-        self.connection = ConnectDataBase().get_instance()
+class RouteDao(BaseDAO):
 
     def save(self, route: Route):
         cursor = self.connection.cursor()
@@ -30,7 +26,7 @@ class RouteDao:
         columns_name = [desc[0] for desc in cursor.description]
 
         for row in result:
-            routes.append(self._create_object(columns_name, row))
+            routes.append(self._create_object(columns_name, row, Route))
 
         cursor.close()
         if routes:
@@ -44,7 +40,7 @@ class RouteDao:
         columns_name = [desc[0] for desc in cursor.description]
 
         for row in result:
-            routes.append(self._create_object(columns_name, row))
+            routes.append(self._create_object(columns_name, row, Route))
 
         cursor.close()
         if routes:
@@ -57,7 +53,7 @@ class RouteDao:
         if row:
             columns_name = [desc[0] for desc in cursor.description]
             cursor.close()
-            route = self._create_object(columns_name, row)
+            route = self._create_object(columns_name, row, Route)
             return route
 
     def update(self, current_route: Route, new_route: Route):
@@ -87,13 +83,3 @@ class RouteDao:
         cursor.execute(SqlRoute._DELETE.format(SqlRoute.TABLE_NAME, id))
         self.connection.commit()
         cursor.close()
-
-    def _create_object(self, columns_name, data):
-        if data:
-            data = dict(zip(columns_name, data))
-            route = Route(**data)
-            return route
-        return None
-
-    def rollback(self):
-        self.connection.rollback()
