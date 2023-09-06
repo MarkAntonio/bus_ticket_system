@@ -49,29 +49,23 @@ def _get_all():
     return make_response([])
 
 
-def _get_by_id(id):
-    trip = trip_business.get(id=id)
-    if trip:
-        return make_response(jsonify(trip.to_dict()), 200)
-    return make_response(jsonify({"Message": "Trip id not found"}), 404)
+def _get_by_id(trip: Trip):
+    return make_response(jsonify(trip.to_dict()), 200)
 
-def _update(id):
+
+def _update(current_trip: Trip):
     data = request.form.to_dict()
     has_error, error_msgs = trip_business.validate_fields(data, Trip.FIELDS)
     if not has_error:
-        current_trip = trip_business.get(id=id)
-        if current_trip:
-            bus_id = data[Trip.BUS_ID]
-            if bus_business.get(id=bus_id):
-                line_id = data[Trip.LINE_ID]
-                if line_business.get(id=line_id):
-                    new_trip = Trip(**data, id=id)
-                    trip_business.update(current_trip, new_trip)
-                    return make_response(jsonify(new_trip.to_dict()))
-                return make_response(jsonify({"Message": f"Line id {line_id} not found"}), 404)
-            return make_response(jsonify({"Message": f"Bus id {bus_id} not found"}), 404)
-
-        return make_response({"Error": "Trip id not found"}, 404)
+        bus_id = data[Trip.BUS_ID]
+        if bus_business.get(id=bus_id):
+            line_id = data[Trip.LINE_ID]
+            if line_business.get(id=line_id):
+                new_trip = Trip(**data, id=current_trip.id)
+                trip_business.update(current_trip, new_trip)
+                return make_response(jsonify(new_trip.to_dict()))
+            return make_response(jsonify({"Message": f"Line id {line_id} not found"}), 404)
+        return make_response(jsonify({"Message": f"Bus id {bus_id} not found"}), 404)
 
     return make_response(jsonify({'Message': error_msgs}), 400)
 
@@ -79,15 +73,18 @@ def _update(id):
 @bp.route('/<int:id>', methods=[GET, DELETE, PUT])
 def delete(id):
     try:
-        if request.method == DELETE:
-            if trip_business.get(id=id):
+        trip = trip_business.get(id=id)
+        if trip:
+            if request.method == DELETE:
                 trip_business.delete(id)
                 return Response(status=204)
-            return make_response({"Message": "Trip id not found"}, 404)
-        elif request.method == GET:
-            return _get_by_id(id)
-        elif request.method == PUT:
-            return _update(id)
+
+            elif request.method == GET:
+                return _get_by_id(trip)
+
+            elif request.method == PUT:
+                return _update(trip)
+        return make_response({"Message": "Trip id not found"}, 404)
 
     except Exception:
         traceback.print_exc()

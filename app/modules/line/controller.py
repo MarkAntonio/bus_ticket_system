@@ -38,27 +38,20 @@ def _get_all():
     return make_response([])
 
 
-def _get_by_id(id):
-    line = line_business.get(id=id)
-    if line:
-        return make_response(jsonify(line.to_dict()), 200)
-    return make_response(jsonify({"Message": "Line id not found"}), 404)
+def _get_by_id(line):
+    return make_response(jsonify(line.to_dict()), 200)
 
 
-def _update(id):
-    current_line = line_business.get(id=id)
+def _update(current_line):
     data = request.form.to_dict()
     has_error, error_msgs = line_business.validate_fields(data, Line.FIELDS)
     if not has_error:
-        if current_line:
-            # está mostrando esse erro por que estou colocando dados de tipos diferentes de str no data
-            data[Line.DEPARTURE_TIME] = Line.str_to_time(data[Line.DEPARTURE_TIME])
-            data[Line.ARRIVAL_TIME] = Line.str_to_time(data[Line.ARRIVAL_TIME])
-            data[Line.ID] = id
-            new_line = Line(**data)
-            line_business.update(current_line, new_line)
-            return make_response(jsonify(new_line.to_dict()))
-        return make_response({"Error": "Line id not found"}, 404)
+        # está mostrando esse erro por que estou colocando dados de tipos diferentes de str no data
+        data[Line.DEPARTURE_TIME] = Line.str_to_time(data[Line.DEPARTURE_TIME])
+        data[Line.ARRIVAL_TIME] = Line.str_to_time(data[Line.ARRIVAL_TIME])
+        new_line = Line(**data, id=current_line.id)
+        line_business.update(current_line, new_line)
+        return make_response(jsonify(new_line.to_dict()))
 
     return make_response(jsonify({'Message': error_msgs}), 400)
 
@@ -66,15 +59,19 @@ def _update(id):
 @bp.route('/<int:id>', methods=[GET, DELETE, PUT])
 def delete(id):
     try:
-        if request.method == DELETE:
-            if line_business.get(id=id):
+        line = line_business.get(id=id)
+        if line:
+            if request.method == DELETE:
                 line_business.delete(id)
                 return Response(status=204)
-            return make_response({"Message": "Line id not found"}, 404)
-        elif request.method == GET:
-            return _get_by_id(id)
-        elif request.method == PUT:
-            return _update(id)
+
+            elif request.method == GET:
+                return _get_by_id(line)
+
+            elif request.method == PUT:
+                return _update(line)
+
+        return make_response({"Message": "Line id not found"}, 404)
 
     except Exception:
         traceback.print_exc()

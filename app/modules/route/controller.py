@@ -61,58 +61,42 @@ def _get_all_by_line(line_id):
     return make_response(jsonify(DEFAULT_ERROR), 404)
 
 
-def _get_by_id(id):
-    try:
-        route = route_business.get(id=id)
-        if route:
-            return make_response(jsonify(route.to_dict()))
-        return make_response(jsonify({"Message": f"Route not found"}), 404)
-    except Exception:
-        traceback.print_exc()
-        route_business.reconnect()
-    return make_response(jsonify(DEFAULT_ERROR), 404)
+def _get_by_id(route: Route):
+    return make_response(jsonify(route.to_dict()))
 
 
-def _update(id):
-    try:
-        data = request.form.to_dict()
-        line_id = data.get(Route.LINE_ID)
-        line = line_business.get(id=line_id)
-        if line:
-            current_route = route_business.get(id=id, line_id=line_id)
-            if current_route:
-                has_error, error_msgs = route_business.validate_fields(data, Route.FIELDS)
-                if not has_error:
-                    new_route = Route(**data, id=id)
-                    route_business.update(current_route, new_route)
-                    return make_response(jsonify(new_route.to_dict()))
-                return make_response(jsonify({'Message': error_msgs}), 400)
+def _update(current_route: Route):
+    data = request.form.to_dict()
+    line_id = data.get(Route.LINE_ID)
+    line = line_business.get(id=line_id)
+    if line:
+        has_error, error_msgs = route_business.validate_fields(data, Route.FIELDS)
+        if not has_error:
+            new_route = Route(**data, id=id)
+            route_business.update(current_route, new_route)
+            return make_response(jsonify(new_route.to_dict()))
+        return make_response(jsonify({'Message': error_msgs}), 400)
 
-            return make_response({"Error": "Route id not found"}, 404)
-
-        msg = f"Line id {line_id} not found"
-        return make_response({"Error": msg}, 404)
-
-
-    except Exception:
-        traceback.print_exc()
-        route_business.reconnect()
-    return jsonify(DEFAULT_ERROR)
+    return make_response({"Error": f"Line id {line_id} not found"}, 404)
 
 
 @bp.route('/<int:id>', methods=[GET, DELETE, PUT])
 def delete(id):
     try:
-        if request.method == DELETE:
-            # verificando se a Route existe
-            if route_business.get(id=id):
+        # verificando se a Route existe
+        route = route_business.get(id=id)
+        if route:
+            if request.method == DELETE:
                 route_business.delete(id)
                 return Response(status=204)
-            return make_response({"Message": f"Route id {id} not found"}, 404)
-        elif request.method == GET:
-            return _get_by_id(id)
-        elif request.method == PUT:
-            return _update(id)
+
+            elif request.method == GET:
+                return _get_by_id(route)
+
+            elif request.method == PUT:
+                return _update(route)
+        return make_response({"Message": f"Route id {id} not found"}, 404)
+
     except Exception:
         traceback.print_exc()
         route_business.reconnect()

@@ -24,7 +24,6 @@ class PassengerBusiness(BaseValidate):
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 
     def update(self, current_passenger, new_passenger):
-        new_passenger.id = current_passenger.id
         self.__passenger_dao.update(current_passenger, new_passenger)
 
     def delete(self, id):

@@ -14,5 +14,4 @@ class SqlRoute:
     _SELECT_ALL_BY_LINE = 'SELECT * FROM {} WHERE line_id = {};'
     _SELECT_BY_ID = 'SELECT * FROM {} WHERE id = {};'
     _UPDATE = 'UPDATE {} SET city = %s, time = %s, price = %s, line_id = %s WHERE id = %s;'
-    _SET_LINE_ID = 'UPDATE {} SET line_id = %s WHERE id = %s;'
     _DELETE = 'DELETE FROM {} WHERE id = {};'

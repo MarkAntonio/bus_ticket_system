@@ -38,23 +38,17 @@ def _get_all():
     return make_response([])
 
 
-def _get_by_id(id):
-    passenger = passenger_business.get(id=id)
-    if passenger:
-        return make_response(jsonify(passenger.to_dict()), 200)
-    return make_response(jsonify({"Message": "Passenger id not found"}), 404)
+def _get_by_id(passenger: Passenger):
+    return make_response(jsonify(passenger.to_dict()), 200)
 
 
-def _update(id):
-    current_passenger = passenger_business.get(id=id)
+def _update(current_passenger: Passenger):
     data = request.form.to_dict()
     has_error, error_msgs = passenger_business.validate_fields(data, Passenger.FIELDS)
     if not has_error:
-        if current_passenger:
-            new_passenger = Passenger(**data)
-            passenger_business.update(current_passenger, new_passenger)
-            return make_response(jsonify(new_passenger.to_dict()))
-        return make_response({"Error": "Passenger id not found"}, 404)
+        new_passenger = Passenger(**data, id=current_passenger.id)
+        passenger_business.update(current_passenger, new_passenger)
+        return make_response(jsonify(new_passenger.to_dict()))
 
     return make_response(jsonify({'Message': error_msgs}), 400)
 
@@ -62,16 +56,19 @@ def _update(id):
 @bp.route('/<int:id>', methods=[GET, DELETE, PUT])
 def delete(id):
     try:
-        if request.method == DELETE:
-            # verificando se o passageiro existe
-            if passenger_business.get(id=id):
+        # verificando se o passageiro existe
+        passenger = passenger_business.get(id=id)
+        if passenger:
+            if request.method == DELETE:
                 passenger_business.delete(id)
                 return Response(status=204)
-            return make_response({"Message": "Passenger id not found"}, 404)
-        elif request.method == GET:
-            return _get_by_id(id)
-        elif request.method == PUT:
-            return _update(id)
+
+            elif request.method == GET:
+                return _get_by_id(passenger)
+
+            elif request.method == PUT:
+                return _update(passenger)
+        return make_response({"Message": "Passenger id not found"}, 404)
 
     except Exception:
         traceback.print_exc()

@@ -12,7 +12,7 @@ seat_business = SeatBusiness()
 _bus_business = BusBusiness()
 
 
-# A rota ADD deve ser acessada somente pelo sistema diretamente no Business do Seat
+# A rota ADD deve ser acessada somente pelo Business do Bus diretamente no Business do Seat
 
 @bp.route('/', methods=[GET])
 def get_all_by_bus():
@@ -54,12 +54,12 @@ def get_by_id(id: str):
 
 def _update(current_seat: Seat):
     data = request.form.to_dict()
-    data[Seat.ID] = current_seat.id
+    # Eu incremento os valores aqui para não dar erro nas verificações
     data[Seat.BUS_ID] = current_seat.bus_id
     data[Seat.NUMBER] = current_seat.number
     has_error, error_msgs = seat_business.validate_fields(data, Seat.FIELDS)
     if not has_error:
-        new_seat = Seat(**data)
+        new_seat = Seat(**data, id=current_seat.id)
         seat_business.update(current_seat, new_seat)
         return make_response(jsonify(new_seat.to_dict()))
     return make_response(jsonify({'Message': error_msgs}), 400)

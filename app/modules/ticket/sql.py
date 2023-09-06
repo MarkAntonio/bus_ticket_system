@@ -6,8 +6,8 @@ class SqlTicket:
                         trip_id SMALLINT NOT NULL REFERENCES trip(id),
                         origin_id SMALLINT NOT NULL REFERENCES route(id),
                         destination_id SMALLINT NOT NULL REFERENCES route(id),
-                        passenger_id SMALLINT NOT NULL REFERENCES passenger(id),
-                        seat_id VARCHAR(10) NOT NULL,
+                        passenger_id SMALLINT NOT NULL REFERENCES passenger(id) ON DELETE CASCADE,
+                        seat_id VARCHAR(10) NOT NULL REFERENCES seat(id),
                         route_price NUMERIC(6,2) NOT NULL
                     );'''
     # Através da trip eu consigo a line_id e com a line eu consigo o bus_id

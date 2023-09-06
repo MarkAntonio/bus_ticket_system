@@ -46,11 +46,9 @@ def _get_all():
     return make_response([])
 
 
-def _get_by_id(id):
-    bus = bus_business.get(id=id)
-    if bus:
-        return make_response(jsonify(bus.to_dict()), 200)
-    return make_response(jsonify({"Message": "Bus id not found"}), 404)
+def _get_by_id(bus):
+    return make_response(jsonify(bus.to_dict()), 200)
+
 
 
 def _get_by_license(license_plate: str):
@@ -68,16 +66,13 @@ def _search_all_by_type(type: str):
     return make_response({}, 404)
 
 
-def _update(id):
-    current_bus = bus_business.get(id=id)
+def _update(current_bus):
     data = request.form.to_dict()
     has_error, error_msgs = bus_business.validate_fields(data, Bus.FIELDS)
     if not has_error:
-        if current_bus:
-            new_bus = Bus(**data, id=id)
-            bus_business.update(current_bus, new_bus)
-            return make_response(jsonify(new_bus.to_dict()))
-        return make_response({"Error": "Bus id not found"}, 404)
+        new_bus = Bus(**data, id=current_bus.id)
+        bus_business.update(current_bus, new_bus)
+        return make_response(jsonify(new_bus.to_dict()))
 
     return make_response(jsonify({'Message': error_msgs}), 400)
 
@@ -85,15 +80,18 @@ def _update(id):
 @bp.route('/<int:id>', methods=[GET, DELETE, PUT])
 def delete(id):
     try:
-        if request.method == DELETE:
-            if bus_business.get(id=id):
+        bus = bus_business.get(id=id)
+        if bus:
+            if request.method == DELETE:
                 bus_business.delete(id)
                 return Response(status=204)
-            return make_response({"Message": "Bus id not found"}, 404)
-        elif request.method == GET:
-            return _get_by_id(id)
-        elif request.method == PUT:
-            return _update(id)
+
+            elif request.method == GET:
+                return _get_by_id(bus)
+
+            elif request.method == PUT:
+                return _update(bus)
+        return make_response({"Message": "Bus id not found"}, 404)
     except Exception:
         traceback.print_exc()
         bus_business.reconnect()

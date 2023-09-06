@@ -57,12 +57,11 @@ class BaseDAO:
         cursor = self.connection.cursor()
         cursor.execute(sql)
         result = cursor.fetchall()
+        cursor.close()
         columns_name = [desc[0] for desc in cursor.description]
-
         for row in result:
             objects.append(self._create_object(columns_name, row, Obj_class))
 
-        cursor.close()
         if objects:
             return objects
 
@@ -70,11 +69,11 @@ class BaseDAO:
         cursor = self.connection.cursor()
         cursor.execute(sql)
         row = cursor.fetchone()
+        cursor.close()
         if row:
             columns_name = [desc[0] for desc in cursor.description]
-            cursor.close()
-            bus = self._create_object(columns_name, row, Obj_class)
-            return bus
+            obj = self._create_object(columns_name, row, Obj_class)
+            return obj
 
     def _create_object(self, columns_name, data, Obj_class):
         if data:
@@ -82,9 +81,9 @@ class BaseDAO:
             return Obj_class(**data)
         return None
 
-    def _update(self, sql, objetcs_tuple: tuple):
+    def _update(self, sql, objects_tuple: tuple):
         cursor = self.connection.cursor()
-        cursor.execute(sql, objetcs_tuple)
+        cursor.execute(sql, objects_tuple)
         self.connection.commit()
         cursor.close()
 
