@@ -19,7 +19,7 @@ class BaseValidate:
 
         # Verifica se os valores dos campos não estão vazios.
         for key, value in data.items():
-            if value.replace(' ', '') == "":
+            if str(value).replace(' ', '') == "":
                 missing_fields.append(key)
 
         if missing_fields:

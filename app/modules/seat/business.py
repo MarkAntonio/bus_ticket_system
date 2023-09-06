@@ -23,11 +23,7 @@ class SeatBusiness(BaseValidate):
         raise Exception('Field not exists')  # caso o programador coloque um campo que não existe ou está incorreto
 
     def update(self, current_seat, new_seat):
-        new_seat.number = current_seat.number
         self.__seat_dao.update(current_seat, new_seat)
-
-    def delete(self, bus_id):
-        self.__seat_dao.delete_all(bus_id)
 
     def reconnect(self):
         self.__seat_dao.rollback()

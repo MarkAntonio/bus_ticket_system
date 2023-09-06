@@ -18,6 +18,7 @@ passenger_business = PassengerBusiness()
 seat_business = SeatBusiness()
 trip_business = TripBusiness()
 
+
 @bp.route("/", methods=[POST, GET])
 def add():
     try:
@@ -35,6 +36,7 @@ def add():
         traceback.print_exc()
         ticket_business.reconnect()
     return make_response(jsonify(DEFAULT_ERROR), 404)
+  #verficiar se aqui deve ser o código 500 (erro interno do servidor
 
 
 def _add(data):
@@ -53,6 +55,9 @@ def _add(data):
                 if destination.line_id != trip.line_id:
                     return make_response(jsonify({"Message": f"Destination line id {destination.line_id} "
                                                              f"is not the same from trip line id {trip.line_id}"}), 404)
+                if destination_id == origin_id:
+                    return make_response(jsonify({"Message":
+                                                      "The origin id must be different from the destination id."}), 405)
                 passenger_id = data[Ticket.PASSENGER_ID]
                 if passenger_business.get(id=passenger_id):
                     seat_id = data[Ticket.SEAT_ID]
@@ -84,6 +89,7 @@ def _see_ticket(id):
             return make_response(jsonify(data), 200)
     return make_response(jsonify({"Message": "Ticket id not found"}), 404)
 
+
 def __update(id, data):
     if ticket_business.get(id=id):
         trip_id = data[Ticket.TRIP_ID]
@@ -99,8 +105,13 @@ def __update(id, data):
                 destination = route_business.get(id=destination_id)
                 if destination:
                     if destination.line_id != trip.line_id:
-                        return make_response(jsonify({"Message": f"Destination line id {destination.line_id} "
-                                                                 f"is not the same from trip line id {trip.line_id}"}), 404)
+                        return make_response(
+                            jsonify({"Message": f"Destination line id {destination.line_id} "
+                                                f"is not the same from trip line id {trip.line_id}"}), 404)
+                    if destination_id == origin_id:
+                        return make_response(
+                            jsonify({"Message":
+                                         "The origin id must be different from the destination id."}), 400)
                     passenger_id = data[Ticket.PASSENGER_ID]
                     if passenger_business.get(id=passenger_id):
                         seat_id = data[Ticket.SEAT_ID]
@@ -117,13 +128,13 @@ def __update(id, data):
         return make_response(jsonify({"Message": f"Trip id {trip_id} not found"}), 404)
     return make_response(jsonify({"Message": f"Ticket id {id} not found"}), 404)
 
+
 def _update(id):
     data = request.form.to_dict()
     has_error, error_msgs = ticket_business.validate_fields(data, Ticket.FIELDS)
     if not has_error:
-       return __update(id, data)
+        return __update(id, data)
     return make_response(jsonify({'Message': error_msgs}), 400)
-
 
 
 @bp.route('/<int:id>', methods=[GET, DELETE, PUT])

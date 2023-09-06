@@ -20,6 +20,9 @@ class SqlSeat:
     # Como o id é string eu tenho que colocar as aspas
     _SELECT_BY_ID = "SELECT * FROM {} WHERE id = '{}';"
 
+    # _SELECT_BY_NUMBER = "SELECT * FROM {} WHERE bus_id={} AND number = {};"
+
+
     # o number e bus id eu não altero porque é incrementado automaticamente pelo sistema caso o ônibus exista
     _UPDATE = '''UPDATE {} SET is_free = %s, vacant_in = %s WHERE id = %s;'''
 

@@ -52,7 +52,7 @@ class TicketDao(BaseDAO):
         if row:
             columns_name = [desc[0] for desc in cursor.description]
             cursor.close()
-            return dict(zip(columns_name, row, Ticket))
+            return dict(zip(columns_name, row))
 
     def update(self, current_ticket: Ticket, new_ticket: Ticket):
         cursor = self.connection.cursor()

@@ -5,7 +5,6 @@ from .sql import SqlSeat
 
 class SeatDao(BaseDAO):
 
-
     def save(self, seat: Seat):
         cursor = self.connection.cursor()
         cursor.execute(SqlSeat._INSERT,
@@ -33,7 +32,7 @@ class SeatDao(BaseDAO):
         if seats:
             return seats
 
-    def get_by_id(self, id: str):
+    def get_by_id(self, id:str):
         cursor = self.connection.cursor()
         cursor.execute(SqlSeat._SELECT_BY_ID.format(SqlSeat.TABLE_NAME, id))
         row = cursor.fetchone()
@@ -56,4 +55,3 @@ class SeatDao(BaseDAO):
 
     # delete não está sendo usado, pois quando eu deleto um Bus ele deleta em cascade todos os Seats que tem o mesmo
     # bus_id do bus
-
