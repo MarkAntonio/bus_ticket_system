@@ -86,23 +86,23 @@ ex: endereço para adicionar um novo ônibus
     
 ### Bus
 - bus/
-  POST - Cria um ônibus caso não exista um ônibus com a mesma placa (atributos license_plate, type e amount_seats no body);
-  GET - Retona Todos os ônibus cadastrados;
-  GET (com o parâmetro de consulta "license_plate") - Retorna o ônibus de acordo com a placa;
-  GET (com o parâmetro de consulta "type") - Retorna todos os ônibus de acordo com o tipo;
+POST - Cria um ônibus caso não exista um ônibus com a mesma placa (atributos license_plate, type e amount_seats no body);</ br>
+GET - Retona Todos os ônibus cadastrados;</ br>
+GET (com o parâmetro de consulta "license_plate") - Retorna o ônibus de acordo com a placa;</ br>
+GET (com o parâmetro de consulta "type") - Retorna todos os ônibus de acordo com o tipo;
   
 - bus/id
-  GET - Retona o ônibus de acordo com o id;
-  DELETE - Deleta o ônibus de acordo com o id;
-  PUT - Atualiza o ônibus de acordo com o id (colocar todos os atributos no body);
+GET - Retona o ônibus de acordo com o id;</ br>
+DELETE - Deleta o ônibus de acordo com o id;</ br>
+PUT - Atualiza o ônibus de acordo com o id (colocar todos os atributos no body);
 
 
 ### Seat
 - seat/
-GET (com o parâmetro de consulta "bus_id")- Retorna todos os assentos vinculados ao ônibus de acordo com o id do ônibus;
+GET (com o parâmetro de consulta "bus_id") - Retorna todos os assentos vinculados ao ônibus de acordo com o id do ônibus;
   
 - seat/bus_id
-GET  - Retorna a poltrona de acordo com seu id; 
+GET - Retorna a poltrona de acordo com seu id; </ br>
 PUT - Atualiza a poltrona de acordo com o id (atributos is_free e vacant_in no body);
 
 *Obs: não existe o método POST nem DELETE pois essas funcionalidades só devem ser acessadas pelo sistema.
@@ -114,52 +114,52 @@ POST - Cria uma linha (atributos no Body: origin, destination, departure_time, a
 GET - Retorna todas as linhas cadastradas;
  
 - line/id
-GET - Retorna a linha de acordo com o id;
-DELETE - Deleta a linha de acordo com o id;
+GET - Retorna a linha de acordo com o id;</ br>
+DELETE - Deleta a linha de acordo com o id;</ br>
 PUT - Atualiza a linha (atributos no Body: origin, destination, departure_time, arrival_time e total_price); 
   
   
 ### Route
 - route/
-POST - Cria uma nova rota vinculada a uma linha (atributos city, time, price, line_id no body);
-GET - Retorna todas as rotas cadastradas;
+POST - Cria uma nova rota vinculada a uma linha (atributos city, time, price, line_id no body);</ br>
+GET - Retorna todas as rotas cadastradas;</ br>
 GET (com o parâmetro de consulta line_id) - Retorna todas as rotas de acordo com o id da linha.
   
 
 - route/id
-GET - Retorna a rota de acordo com o id;
-PUT - Atualiza a rota (atributos city, time, price, line_id no body);
+GET - Retorna a rota de acordo com o id;</ br>
+PUT - Atualiza a rota (atributos city, time, price, line_id no body);</ br>
 DELETE - Deleta a rota de acordo com o id;
   
   
 ### Trip
 - trip/
-POST - Cria uma nova viagem vinculada a uma linha (atributos date, line_id e bus_id no body);
+POST - Cria uma nova viagem vinculada a uma linha (atributos date, line_id e bus_id no body);</ br>
 GET - Retorna todas as viagens cadastradas;
  
 - trip/id
-GET - Retorna a viagem de acordo com o id;
-PUT - Atualiza a rota de acordo com o id (atributos date, line_id e bus_id no body);
+GET - Retorna a viagem de acordo com o id;</ br>
+PUT - Atualiza a rota de acordo com o id (atributos date, line_id e bus_id no body);</ br>
 DELETE - Deleta a viagem de acordo com o id;
   
 
 ### Passenger
 - passenger/
-POST - Cria um novo passageiro (atributos name e phone no body);
+POST - Cria um novo passageiro (atributos name e phone no body);</ br>
 GET - Retorna todas os passageiros cadastrados;
  
-- passanger/id
-GET - Retorna o passageiro de acordo com o id;
-PUT - Atualiza o passageiro de acordo com o id (atributos name e phone no body);
+- passenger/id
+GET - Retorna o passageiro de acordo com o id;</ br>
+PUT - Atualiza o passageiro de acordo com o id (atributos name e phone no body);</ br>
 DELETE - Deleta o passageiro de acordo com o id;
 
 
 ### Ticket
 - ticket/
-POST - Cria um novo ticket (atributos trip_id, origin_id, destination_id, passenger_id e seat_id body);
+POST - Cria um novo ticket (atributos trip_id, origin_id, destination_id, passenger_id e seat_id body);</ br>
 GET - Retorna todas os tickets cadastrados;
  
 - ticket/id
-GET - Retorna o ticket de acordo com o id;
-PUT - Atualiza o ticket de acordo com o id (atributos trip_id, origin_id, destination_id, passenger_id e seat_id body);
+GET - Retorna o ticket de acordo com o id;</ br>
+PUT - Atualiza o ticket de acordo com o id (atributos trip_id, origin_id, destination_id, passenger_id e seat_id body);</ br>
 DELETE - Deleta o ticket de acordo com o id;
