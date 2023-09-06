@@ -27,55 +27,55 @@ Por exemplo, a tabela Seat não tem as rotas add nem delete, pois no momento em 
 PK: Chave Primária.  
 FK: Chave Estrangeira.  
 
-- Bus:  
-  id (PK)- valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica o Ônibus;  
-  license_plate - placa do ônibus. Tem o padrão AAA9A99, onde A podem ser letras e 9 podem ser números;  
-  type - tipo do ônibus. pode ser somente: Convencional, Executivo, Semi-Leito ou Leito;  
-  amount_seats - quantidade de poltronas do ônibus. Não tem um padrão;  
+- Bus:
+  - id (PK)- valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica o Ônibus;
+  - license_plate - placa do ônibus. Tem o padrão AAA9A99, onde A podem ser letras e 9 podem ser números;
+  - type - tipo do ônibus. pode ser somente: Convencional, Executivo, Semi-Leito ou Leito;
+  - amount_seats - quantidade de poltronas do ônibus. Não tem um padrão;
 
 - Seat:  
-  id (PK): Valor caratere, não repetível e auto incrementário pelo sistema, que identifica a Poltrona. é presentado pela placa do ônibus a qual pertence + a numeração da poltrona. Ex: YSL1A78-2, YSL1A78-18;	  
-  number - Numeração do Assento;  
-  is_free - TRUE (assento está vago), FALSE (Assento ocupado).  
-  vacant_in - NULL (Indica que o assento está livre), "nome da cidade" (indica a cidade em que o assento vai desocupar); Caso is_free TRUE,   vacant_in deve ser NULL, caso is_free FALSE, vacant_in deve conter o nome da cidade.   
-  bus_id (Fk) - id do ônibus a qual o assento pertence;  
+  - id (PK): Valor caratere, não repetível e auto incrementário pelo sistema, que identifica a Poltrona. é presentado pela placa do ônibus a qual pertence + a numeração da poltrona. Ex: YSL1A78-2, YSL1A78-18;	  
+  - number - Numeração do Assento;  
+  - is_free - TRUE (assento está vago), FALSE (Assento ocupado).  
+  - vacant_in - NULL (Indica que o assento está livre), "nome da cidade" (indica a cidade em que o assento vai desocupar); Caso is_free TRUE,   vacant_in deve ser NULL, caso is_free FALSE, vacant_in deve conter o nome da cidade.   
+  - bus_id (Fk) - id do ônibus a qual o assento pertence;  
 
 - Line:  
-  id (PK)- valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica a Linha;  
-  origin - cidade de origem ou última cidade da linha;  
-  destination - cidade de destino ou última cidade da linha;  
-  departure_time - horário que o ônibus sai da cidade de origem;   
-  arrival_time - horário que o ônibus chega na cidade de destino;   
-  total_price - Preço da linha;  
+  - id (PK)- valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica a Linha;  
+  - origin - cidade de origem ou última cidade da linha;  
+  - destination - cidade de destino ou última cidade da linha;  
+  - departure_time - horário que o ônibus sai da cidade de origem;   
+  - arrival_time - horário que o ônibus chega na cidade de destino;   
+  - total_price - Preço da linha;  
 
 - Route:  
-  id (PK) - valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica a Rota;  
-  city - cidade da rota (que está na linha);  
-  time - horário que o ônibus passa na cidade;  
-  price - valor da cidade à cidade de destino (última cidade da linha);  
-  line_id (FK) - id da linha a qual a rota pertence;  
+  - id (PK) - valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica a Rota;  
+  - city - cidade da rota (que está na linha);  
+  - time - horário que o ônibus passa na cidade;  
+  - price - valor da cidade à cidade de destino (última cidade da linha);  
+  - line_id (FK) - id da linha a qual a rota pertence;  
 
 - Trip  
-  id (PK) - valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica a Viagem;  
-  date - data da viagem;  
-  line_id (FK) - id da linha a qual a viagem pertence;   
-  bus_id (FK) - id do ônibus a qual a viagem percente;  
+  - id (PK) - valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica a Viagem;  
+  - date - data da viagem;  
+  - line_id (FK) - id da linha a qual a viagem pertence;   
+  - bus_id (FK) - id do ônibus a qual a viagem percente;  
 
 
 - Passenger  
-  id (PK) - valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica o Passageiro;  
-  name - nome do passageiro;  
-  phone - telefone do passageiro. Tem o padrão: (xx)9xxxx-xxxx onde x é valor numérico.  
+  - id (PK) - valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica o Passageiro;  
+  - name - nome do passageiro;  
+  - phone - telefone do passageiro. Tem o padrão: (xx)9xxxx-xxxx onde x é valor numérico.  
 
 
 - Ticket    
-  id (PK) - valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica a Compra da passagem;  
-  trip_id (FK) - id da viagem da compra;  
-  origin_id (FK) - id da rota origem da viagem da compra(o line_id da rota deve ser o mesmo do line_id da viagem);  
-  destination_id (FK) - id da rota destino da viagem da compra (o line_id da rota deve ser o mesmo do line_id da viagem);  
-  passenger_id (FK) - id do passageiro que está comprando a passagem;  
-  seat_id (FK) - id da poltrona que o passageiro vai comprar;  
-  route_price - preço da rota escolhida pelo passageiro, calculado automatimente pelo sistema.
+  - id (PK) - valor numérico, não repetível e auto incrementário pelo banco de dados, que identifica a Compra da passagem;  
+  - trip_id (FK) - id da viagem da compra;  
+  - origin_id (FK) - id da rota origem da viagem da compra(o line_id da rota deve ser o mesmo do line_id da viagem);  
+  - destination_id (FK) - id da rota destino da viagem da compra (o line_id da rota deve ser o mesmo do line_id da viagem);  
+  - passenger_id (FK) - id do passageiro que está comprando a passagem;  
+  - seat_id (FK) - id da poltrona que o passageiro vai comprar;  
+  - route_price - preço da rota escolhida pelo passageiro, calculado automatimente pelo sistema.
   
   
 *Os valores monetários estão no formato americano (17.99, 1.00 etc);  
